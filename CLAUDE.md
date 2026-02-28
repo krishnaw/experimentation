@@ -52,13 +52,22 @@ Chat exists **only in `apps/dashboard`**. It was removed from `apps/web`.
 
 `apps/web` has **neither** of these files. Do not add chat back to web.
 
-## LLM Fallback (dashboard only)
+## LLM Fallback Chain (dashboard only)
 
-Cerebras (llama-3.3-70b) → Groq (llama-3.3-70b-versatile) → Anthropic (claude-haiku-4-5)
+Free providers tried in order (first available key wins):
+1. **Cerebras** — llama-3.3-70b (fastest, free tier)
+2. **Mistral** — mistral-small-latest, then mistral-medium-latest (free tier)
+3. **Groq** — llama-3.3-70b-versatile (free tier)
+4. **Anthropic** — claude-haiku-4-5 (paid last-resort, sliding-window guarded)
+
+Anthropic usage limits (sliding-window):
+- 10/5min (burst), 40/1hr, 200/24hr
+
+Rate-limit backoff: 10 minutes per provider on error.
 
 ```typescript
-createOpenAI({ baseURL, apiKey }).chat(modelId)   // Cerebras, Groq — .chat() required
-createAnthropic({ apiKey })(modelId)              // Anthropic
+createOpenAI({ baseURL, apiKey }).chat(modelId)   // Cerebras, Mistral, Groq — .chat() required
+createAnthropic({ apiKey })(modelId)              // Anthropic — guarded by isAnthropicAllowed()
 stopWhen: stepCountIs(5)                          // Vercel AI SDK v6 syntax
 ```
 
