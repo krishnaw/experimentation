@@ -1,0 +1,32 @@
+services:
+  growthbook:
+    image: growthbook/growthbook:latest
+    container_name: growthbook
+    ports:
+      - "3000:3000"
+      - "3100:3100"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/growthbook
+    depends_on:
+      - mongo
+    networks:
+      - growthbook-network
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6
+    container_name: growthbook-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - growthbook-network
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+
+networks:
+  growthbook-network:
+    driver: bridge

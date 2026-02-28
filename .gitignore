@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Environment files (NEVER commit secrets)
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/
+scripts/screenshots/
+
+# Server management (runtime)
+scripts/pids/
+scripts/logs/
+
+# Misc
+.turbo/
+.cache/
+tmp/
+
+# Claude Code
+.claude/
