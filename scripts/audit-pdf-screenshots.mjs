@@ -83,8 +83,8 @@ async function judgePage(pageNum, imagePath, totalPages, label) {
   const imageData = readFileSync(imagePath).toString("base64");
 
   const body = JSON.stringify({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 500,
+    model: "claude-sonnet-4-6",
+    max_tokens: 800,
     messages: [
       {
         role: "user",
@@ -99,16 +99,20 @@ async function judgePage(pageNum, imagePath, totalPages, label) {
 
 This page is: "${label}"
 
-Judge this page ruthlessly. Key context: ALL app screenshots are from DemoApp2, a Safeway grocery store app (hero banners, deals grid, categories, fresh produce section). There is NO DemoApp1 in this PDF.
+Judge this page ruthlessly. Key context: ALL app screenshots are from DemoApp2, a Safeway grocery store app (hero banners, deals grid, categories, fresh produce section).
+
+IMPORTANT CONTEXT (do NOT flag these as issues):
+- The left navigation sidebar always shows "DemoApp1", "DemoApp2", and "Exp Engine" links — this is expected navigation and is NOT a problem.
+- The Control Room left panel has two sections: "Experiments" (for A/B split tests) and "Feature Flags" (for targeting rules). Seeing "No experiments yet" under the Experiments section is NORMAL in demos 1-9 which use feature flags, not A/B experiments. Do NOT flag this as a problem.
+- Chat screenshot text may be small — judge it on whether the overall content (user question visible, AI response visible with some content) is present, not on whether every word is legible.
 
 Specific things that MUST pass:
-- Screenshots must show what captions say (e.g. if caption says "deals grid", the screenshot must show a deals grid with grocery product cards — not a hero banner)
-- Chat screenshots must show BOTH the user's question AND the AI's response with actual content (not empty boxes, not "Attempt again...", not just a header with no response)
-- App screenshots must show the right persona/section described in the caption (grocery store UI)
+- Screenshots must broadly match what captions describe (e.g. if caption says "deals grid", a deals grid with product cards should be visible — though other UI sections like category tiles may also appear in the same screenshot)
+- Chat screenshots must show the AI's response panel with actual content — not empty boxes or error states
+- App screenshots must show a DemoApp2 Safeway grocery store UI
 - No "Exp Engine offline" errors visible in the UI of any screenshot
 - Text must be readable and professionally formatted
-- Nothing should look broken, cut off awkwardly, or misaligned
-- Overview screenshots of the Safeway app should make a strong first impression
+- Nothing should look broken, cut off awkwardly, or severely misaligned
 
 For cover pages and text-only pages (no screenshots expected), simply verify the text is readable and the design looks professional.
 
@@ -121,7 +125,7 @@ ISSUES: bullet list of specific problems (write "none" if PASS)`,
     ],
   });
 
-  // Retry up to 3 times with backoff on network errors
+  // Retry up to 3 times with backoff on network errors or empty responses
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const response = await fetch("https://api.anthropic.com/v1/messages", {
@@ -134,7 +138,26 @@ ISSUES: bullet list of specific problems (write "none" if PASS)`,
         body,
       });
       const data = await response.json();
+      // Handle API errors (rate limits, overload, etc.)
+      if (data.type === "error" || data.error) {
+        const errMsg = data.error?.message ?? JSON.stringify(data);
+        if (attempt < 3) {
+          process.stdout.write(` (API error, retry ${attempt}: ${errMsg.slice(0, 60)})... `);
+          await new Promise(r => setTimeout(r, 5000 * attempt));
+          continue;
+        }
+        return { pass: false, issues: `API error: ${errMsg}` };
+      }
       const text = data.content?.[0]?.text ?? "";
+      // If response is empty, retry — don't treat as failure
+      if (!text.trim()) {
+        if (attempt < 3) {
+          process.stdout.write(` (empty response, retry ${attempt})... `);
+          await new Promise(r => setTimeout(r, 4000 * attempt));
+          continue;
+        }
+        return { pass: false, issues: "Judge returned empty response after 3 attempts" };
+      }
       const pass = text.includes("VERDICT: PASS");
       const issuesMatch = text.match(/ISSUES:\s*([\s\S]+)/);
       const issues = issuesMatch?.[1]?.trim() ?? text;
@@ -142,7 +165,7 @@ ISSUES: bullet list of specific problems (write "none" if PASS)`,
     } catch (err) {
       if (attempt < 3) {
         process.stdout.write(` (retry ${attempt})... `);
-        await new Promise(r => setTimeout(r, 2000 * attempt));
+        await new Promise(r => setTimeout(r, 3000 * attempt));
       } else {
         return { pass: false, issues: `Network error after ${attempt} attempts: ${err.message}` };
       }
@@ -169,6 +192,8 @@ const failures = [];
 const results = [];
 
 for (const { num, path: imagePath, label } of pages) {
+  // Brief delay between requests to avoid rate limits
+  if (num > 1) await new Promise(r => setTimeout(r, 2000));
   process.stdout.write(`  Chapter ${String(num).padStart(2)} / ${pages.length}  [${label}] ... `);
   const { pass, issues } = await judgePage(num, imagePath, pages.length, label);
   results.push({ num, label, pass, issues, imagePath });

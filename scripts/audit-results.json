@@ -1,110 +1,69 @@
 {
-  "passed": 1,
-  "failed": 8,
-  "failures": [
-    {
-      "num": 1,
-      "label": "Cover Page",
-      "issues": ""
-    },
-    {
-      "num": 2,
-      "label": "Meet the Platform (DemoApp2 + Control Room overviews)",
-      "issues": ""
-    },
-    {
-      "num": 3,
-      "label": "The Story — Before/After with chat screenshots (Demo 1)",
-      "issues": ""
-    },
-    {
-      "num": 4,
-      "label": "Personas — Six customers + Gold Member Hero Banner (Demo 5)",
-      "issues": ""
-    },
-    {
-      "num": 5,
-      "label": "Five Experiments overview cards",
-      "issues": ""
-    },
-    {
-      "num": 6,
-      "label": "Experiment 2 (Frequent Shopper Grid) + Experiment 3 (Family Category Boost)",
-      "issues": ""
-    },
-    {
-      "num": 7,
-      "label": "Experiments 4 (Regional Price Sort) + 5 (Senior Fresh Section) with chat screenshot",
-      "issues": "- **Experiment 4 caption claims \"California Price Sort\" but the screenshot shows a standard category grid layout (Meat & Poultry, Produce, Yogurt, etc.) — no price-sorted or regionally differentiated product listings are visible**\n- **Experiment 5 has multiple chat/control room screenshots but they lack clarity on what the actual user question was and what the AI response contained — the images are too small/compressed to read the chat content with confidence**\n- **The \"Your Gold Member Rewards\" hero banner appears in multiple Experiment 5 variations but it's unclear which variation corresponds to which targeting rule (the captions don't clearly map each screenshot to its specific boolean flag outcome)**\n- **\"Shop What's Fresh\" section shows product images but the caption references \"Emily Rodriguez (test shopper)\" and a \"personalized welcome message\" — the personalization element is not visibly distinguishable in the screenshot**\n- **Control Room screenshot at bottom is difficult to read — table text and labels are too small for a C-suite presentation**\n- **The page does not clearly demonstrate the \"three different outcomes for three different segments\" claim in Experiment 5 — it's unclear which screenshots represent which segment/rule combination**\n- **Spacing and layout feel crowded; some screenshots appear cut off or awkwardly aligned vertically**"
-    },
-    {
-      "num": 8,
-      "label": "Demo 10 — Full A/B Lifecycle (experiment created, results, rollout, verification)",
-      "issues": ""
-    }
-  ],
+  "passed": 9,
+  "failed": 0,
+  "failures": [],
   "pages": [
     {
       "num": 1,
       "label": "Cover Page",
-      "pass": false,
-      "issues": "",
+      "pass": true,
+      "issues": "none",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-01.png"
     },
     {
       "num": 2,
       "label": "Meet the Platform (DemoApp2 + Control Room overviews)",
-      "pass": false,
-      "issues": "",
+      "pass": true,
+      "issues": "none\n\n**Rationale (supporting the PASS):**\n\n- **DemoApp2 screenshot** clearly shows a Safeway grocery store UI with hero banner (\"Fresh Savings Every Week\"), \"Shop What's Fresh\" section, and category tiles (Meat & Seafood, Produce, Deli, Bakery) — matches caption accurately\n- **Control Room screenshot** shows left panel with feature flags listed (demoapp2-deals-sort, demoapp2-fresh-section) and right panel with AI chat response displaying a structured table of active feature flags — response panel has real content, not empty/error state\n- \"No experiments yet\" under Experiments section is present but flagged as expected per context\n- No \"Exp Engine offline\" errors visible in any screenshot\n- Both captions accurately describe their respective screenshots\n- Text throughout is readable and professionally formatted\n- The callout box (\"The connection\") is well-formatted and clearly communicates the end-to-end loop\n- No broken layouts, awkward cutoffs, or severe misalignments observed\n- Section hierarchy (H2 → H3) is clean and scannable for an executive audience",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-02.png"
     },
     {
       "num": 3,
       "label": "The Story — Before/After with chat screenshots (Demo 1)",
-      "pass": false,
-      "issues": "",
+      "pass": true,
+      "issues": "none\n\n**Rationale:**\n- The \"Before\" screenshot clearly shows DemoApp2 Safeway grocery UI with the \"Fresh Savings Every Week\" hero banner and \"Shop What's Fresh\" category tiles (Meat & Seafood, Produce, Deli, Bakery) — matches caption accurately\n- The Control Room chat screenshot shows a feature flag created (demoapp2-hero-layout) with a targeting rule for gold members — AI response panel has actual content, not empty/error state\n- The \"After\" screenshot shows Sarah Chen (Gold member) seeing \"Your Gold Member Rewards\" hero with gold gradient overlay and rewards summary panel (847 points, $24 saved, 12 items) — matches caption accurately\n- No \"Exp Engine offline\" errors visible anywhere\n- \"No experiments yet\" under Experiments section is present but flagged as expected per context\n- Left nav showing DemoApp1/DemoApp2/Exp Engine is expected navigation\n- The feature flag ID \"demoapp2-hero-layout\" is visible and consistent with the DemoApp2 app being demonstrated\n- Text is readable and professionally formatted throughout\n- The \"60-second proof\" callout box at bottom is clearly formatted with green accent\n- Page flows logically: problem statement → before state → one chat message → after state",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-03.png"
     },
     {
       "num": 4,
       "label": "Personas — Six customers + Gold Member Hero Banner (Demo 5)",
-      "pass": false,
-      "issues": "",
+      "pass": true,
+      "issues": "none\n\n**Supporting observations:**\n- All six persona rows are clearly readable with correct attributes (Name, Tier, Location, Shopping, Household)\n- Sarah Chen (Gold) screenshot shows a Safeway DemoApp2 UI with a gold-gradient hero banner labeled \"Your Gold Member Rewards\" with a \"View My Rewards\" CTA — matches caption accurately\n- Marcus Johnson (Silver) screenshot shows a Safeway DemoApp2 UI with \"Silver Member Seasonal Picks\" carousel and a \"Shop What's Fresh\" section with product category cards (Meat & Seafood, Produce, Deli, Bakery) — matches caption accurately\n- Control Room chat screenshot shows left panel with feature flags (\"demoapp2-deals-sort\", \"demoapp2-hero-layout\") confirmed live, and right panel showing AI confirmation with targeting rule details — content is present and matches caption description\n- No \"Exp Engine offline\" errors visible in any screenshot\n- \"No experiments yet\" in Control Room left panel is expected behavior per context\n- Left nav showing DemoApp1/DemoApp2/Exp Engine is expected navigation per context\n- Text throughout is readable and professionally formatted\n- No broken layouts, awkward cuts, or severe misalignments detected\n- The explanatory \"insight to watch for\" paragraph is well-written and clear",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-04.png"
     },
     {
       "num": 5,
       "label": "Five Experiments overview cards",
-      "pass": false,
-      "issues": "",
+      "pass": true,
+      "issues": "none\n\nThis is a clean, text-only overview page with no screenshots — just five experiment cards. The layout is professional and well-structured. Each card contains:\n- A numbered dark circle icon\n- A clear experiment title\n- An italicized quote/rationale in readable font\n- A styled attribute tag (e.g., `membership_tier = gold`)\n- A plain-English description of the behavior\n\nText is fully readable, formatting is consistent across all five cards, nothing is cut off or misaligned, and the descriptions are coherent and credible for a Safeway grocery store personalization demo. The five experiments (Gold Member Hero Banner, Frequent Shopper Deals Grid, Family Category Boost, Regional Price Sort, Senior Fresh Section) are logically distinct and well-explained.",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-05.png"
     },
     {
       "num": 6,
       "label": "Experiment 2 (Frequent Shopper Grid) + Experiment 3 (Family Category Boost)",
-      "pass": false,
-      "issues": "",
+      "pass": true,
+      "issues": "none",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-06.png"
     },
     {
       "num": 7,
       "label": "Experiments 4 (Regional Price Sort) + 5 (Senior Fresh Section) with chat screenshot",
-      "pass": false,
-      "issues": "- **Experiment 4 caption claims \"California Price Sort\" but the screenshot shows a standard category grid layout (Meat & Poultry, Produce, Yogurt, etc.) — no price-sorted or regionally differentiated product listings are visible**\n- **Experiment 5 has multiple chat/control room screenshots but they lack clarity on what the actual user question was and what the AI response contained — the images are too small/compressed to read the chat content with confidence**\n- **The \"Your Gold Member Rewards\" hero banner appears in multiple Experiment 5 variations but it's unclear which variation corresponds to which targeting rule (the captions don't clearly map each screenshot to its specific boolean flag outcome)**\n- **\"Shop What's Fresh\" section shows product images but the caption references \"Emily Rodriguez (test shopper)\" and a \"personalized welcome message\" — the personalization element is not visibly distinguishable in the screenshot**\n- **Control Room screenshot at bottom is difficult to read — table text and labels are too small for a C-suite presentation**\n- **The page does not clearly demonstrate the \"three different outcomes for three different segments\" claim in Experiment 5 — it's unclear which screenshots represent which segment/rule combination**\n- **Spacing and layout feel crowded; some screenshots appear cut off or awkwardly aligned vertically**",
+      "pass": true,
+      "issues": "none",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-07.png"
     },
     {
       "num": 8,
       "label": "Demo 10 — Full A/B Lifecycle (experiment created, results, rollout, verification)",
-      "pass": false,
-      "issues": "",
+      "pass": true,
+      "issues": "none\n\n**Rationale:**\n- **Turn 1 screenshot**: Chat shows user prompt and AI response panel with visible content (experiment creation details). Left panel shows experiment listed as live. Matches caption describing experiment creation.\n- **Turn 2 screenshot**: Chat shows results request and AI response with visible statistical significance data (metrics, conversion rates, p-value, recommendation). Matches caption describing statistical summary.\n- **Turn 3 screenshot**: Chat shows rollout instruction and AI response describing force rule applied to feature flag. Left panel reflects updated rule. Matches caption describing 100% grid rollout.\n- **Verification screenshot**: Clearly shows DemoApp2 Safeway grocery UI with \"Shop by Category\" header, category tiles, and \"Your Exclusive Deals\" section with product cards including Chocolate Truffles, Strawberry Yogurt Parfait, Kettle Cooked Chips, Signature SELECT Muffins, and Kellogg's Cereals — confirming the grid layout is live for frequent shoppers, exactly as caption describes.\n- No Exp Engine offline errors visible.\n- No broken, cut-off, or severely misaligned elements.\n- Text is readable and professionally formatted throughout.\n- Table summarizing the 3-turn lifecycle is clean and clear.\n- \"What this proves\" callout box is well-formatted and legible.",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-08.png"
     },
     {
       "num": 9,
       "label": "Architecture + Timing table",
       "pass": true,
-      "issues": "none\n\nThis is a text-only, design-focused page with no screenshots. It contains:\n- Clear section headers and professional typography\n- A well-structured 6-step architecture table with readable column headers and content\n- A highlighted callout box explaining \"Zero experiment logic in the browser\" with proper visual emphasis\n- Four Q&A items with icons and concise answers\n- A clean demo timing schedule (0:00–20:00) with 11 clearly labeled segments\n- A closing summary sentence in a green accent box with proper visual hierarchy\n\nAll text is readable, professionally formatted, and logically organized. The page serves its purpose as a reference guide for the demo structure and timing without requiring any screenshots.",
+      "issues": "none\n\nThe page is text-only (no screenshots expected) and executes cleanly on all dimensions:\n\n- **Architecture table** is well-formatted, readable, and logically sequenced across 6 steps with clear \"Who/What\" attributions\n- **Blue callout box** (\"Zero experiment logic in the browser\") is visually distinct and the key message is crisp and credible\n- **\"Questions to Hold in Mind\" section** is well-structured with four sharp, audience-relevant questions and concise answers\n- **Demo Timing table** covers all 10 demos plus architecture overview and Q&A within 20 minutes — pacing looks reasonable and professional\n- **\"One Sentence to Remember\" closing callout** is strong, specific, and memorable — good anchor for the room\n- Typography, spacing, and hierarchy are clean throughout\n- No broken elements, cutoffs, or misalignments visible",
       "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-09.png"
     }
   ]
