@@ -1,14 +1,14 @@
-// Integration tests: apps/web <-> GrowthBook SDK
+// Integration tests: apps/web <-> Exp Engine SDK
 //
 // Real system: apps/web (Next.js at http://localhost:3050)
-// Mocked: GrowthBook SDK endpoint via page.route intercepting /api/features/
+// Mocked: Exp Engine SDK endpoint via page.route intercepting /api/features/
 //
-// The GrowthBook React SDK fetches features from /api/features/{clientKey}.
+// The Exp Engine React SDK fetches features from /api/features/{clientKey}.
 // We intercept this with page.route() to return controlled feature payloads,
 // then verify the web app renders correctly based on feature flag values.
 import { test, expect, type Page } from "@playwright/test";
 
-// Build a GrowthBook features API response payload.
+// Build a Exp Engine features API response payload.
 function buildFeaturesResponse(features: Record<string, unknown>) {
   const formatted: Record<string, { defaultValue: unknown }> = {};
   for (const [key, value] of Object.entries(features)) {
@@ -20,10 +20,10 @@ function buildFeaturesResponse(features: Record<string, unknown>) {
   };
 }
 
-// Set up the GrowthBook SDK mock via page.route, clear the localStorage cache,
+// Set up the Exp Engine SDK mock via page.route, clear the localStorage cache,
 // and navigate to the homepage.
 async function setupWithFeatures(page: Page, features: Record<string, unknown>) {
-  // Intercept GrowthBook SDK features endpoint
+  // Intercept Exp Engine SDK features endpoint
   await page.route("**/api/features/**", (route) => {
     return route.fulfill({
       status: 200,
@@ -38,7 +38,7 @@ async function setupWithFeatures(page: Page, features: Record<string, unknown>) 
   await page.reload({ waitUntil: "networkidle" });
 }
 
-test.describe("web <-> GrowthBook SDK: product-card-layout", () => {
+test.describe("web <-> Exp Engine SDK: product-card-layout", () => {
   test('layout "large-image" shows 3-column grid and layout badge', async ({ page }) => {
     await setupWithFeatures(page, { "product-card-layout": "large-image" });
 
@@ -82,7 +82,7 @@ test.describe("web <-> GrowthBook SDK: product-card-layout", () => {
   });
 });
 
-test.describe("web <-> GrowthBook SDK: featured-section-enabled", () => {
+test.describe("web <-> Exp Engine SDK: featured-section-enabled", () => {
   test("featured section visible when enabled", async ({ page }) => {
     // useFeatureIsOn returns true for truthy defaultValue
     await setupWithFeatures(page, { "featured-section-enabled": true });
@@ -105,7 +105,7 @@ test.describe("web <-> GrowthBook SDK: featured-section-enabled", () => {
   });
 });
 
-test.describe("web <-> GrowthBook SDK: combined flags", () => {
+test.describe("web <-> Exp Engine SDK: combined flags", () => {
   test("large-image layout + featured section both active", async ({ page }) => {
     await setupWithFeatures(page, {
       "product-card-layout": "large-image",
@@ -129,9 +129,9 @@ test.describe("web <-> GrowthBook SDK: combined flags", () => {
   });
 });
 
-test.describe("web <-> GrowthBook SDK: error resilience", () => {
+test.describe("web <-> Exp Engine SDK: error resilience", () => {
   test("page loads with defaults when SDK endpoint is unreachable", async ({ page }) => {
-    // Abort all GrowthBook SDK requests to simulate endpoint being down
+    // Abort all Exp Engine SDK requests to simulate endpoint being down
     await page.route("**/api/features/**", (route) => route.abort());
 
     await page.goto("/", { waitUntil: "commit" });

@@ -1,6 +1,6 @@
 #!/bin/bash
 # scripts/restart.sh — Restart one or all servers
-# Usage: ./scripts/restart.sh [web|dashboard|api|docker|all]
+# Usage: ./scripts/restart.sh [web|docker|all]
 # Default: all
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

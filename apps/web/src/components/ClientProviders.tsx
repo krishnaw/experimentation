@@ -2,7 +2,8 @@
 
 import GrowthBookProvider from "@/components/GrowthBookProvider";
 import { CartProvider } from "@/lib/cart";
-import Header from "@/components/Header";
+import { UserProvider } from "@/contexts/UserContext";
+import Sidebar from "@/components/Sidebar";
 
 export default function ClientProviders({
   children,
@@ -11,10 +12,14 @@ export default function ClientProviders({
 }) {
   return (
     <GrowthBookProvider>
-      <CartProvider>
-        <Header />
-        <main>{children}</main>
-      </CartProvider>
+      <UserProvider>
+        <CartProvider>
+          <div className="flex h-screen">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto">{children}</main>
+          </div>
+        </CartProvider>
+      </UserProvider>
     </GrowthBookProvider>
   );
 }

@@ -1,6 +1,6 @@
 #!/bin/bash
 # scripts/stop.sh — Stop one or all servers
-# Usage: ./scripts/stop.sh [web|dashboard|api|docker|all]
+# Usage: ./scripts/stop.sh [web|docker|all]
 # Default: all
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -63,17 +63,13 @@ TARGET="${1:-all}"
 echo "==> stop: $TARGET"
 case "$TARGET" in
   web)       stop_server "web" "3050" ;;
-  dashboard) stop_server "dashboard" "4000" ;;
-  api)       stop_server "api" "3200" ;;
   docker)    stop_docker ;;
   all)
     stop_server "web" "3050"
-    stop_server "dashboard" "4000"
-    stop_server "api" "3200"
     stop_docker
     ;;
   *)
-    echo "Usage: $0 [web|dashboard|api|docker|all]"
+    echo "Usage: $0 [web|docker|all]"
     exit 1
     ;;
 esac

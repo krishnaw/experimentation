@@ -12,7 +12,7 @@ export default function GrowthBookProvider({
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    // ?reset clears all GrowthBook client-side caches and redirects to /
+    // ?reset clears all Exp Engine client-side caches and redirects to /
     // Use http://localhost:3050?reset before manual testing to start clean
     if (window.location.search.includes("reset")) {
       localStorage.removeItem("gbFeaturesCache");
@@ -20,11 +20,11 @@ export default function GrowthBookProvider({
       return;
     }
 
-    // Patch window.fetch to append a unique ?_cb=<epoch> to every GrowthBook
+    // Patch window.fetch to append a unique ?_cb=<epoch> to every Exp Engine
     // features endpoint request. This bypasses Chrome's in-memory HTTP cache,
     // which persists across hard refreshes and is the root cause of stale
     // feature flag values appearing after flags are created or deleted.
-    // GrowthBook ignores unknown query params — only the clientKey path matters.
+    // Exp Engine ignores unknown query params — only the clientKey path matters.
     const origFetch = window.fetch.bind(window);
     window.fetch = (input, init) => {
       const url =
@@ -43,7 +43,7 @@ export default function GrowthBookProvider({
     };
 
     growthbook.init({ streaming: false }).catch((err) => {
-      console.warn("GrowthBook init failed (this is okay without a running instance):", err);
+      console.warn("Exp Engine init failed (this is okay without a running instance):", err);
     });
 
     return () => {

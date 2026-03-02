@@ -1,24 +1,24 @@
 /**
- * Integration tests: apps/web <-> apps/api
+ * Integration tests: web API routes
  *
- * Real systems: apps/web (Next.js at :3050) and apps/api (Express at :3200)
- * Mocked: nothing — both are real servers
+ * Real systems: apps/web (Next.js at :3050) — all API routes are in-app
+ * Mocked: nothing — real server
  *
- * Tests the API's product endpoints as a black-box contract.
- * Uses Playwright's request context to make HTTP calls to the API.
+ * Tests the API's product and health endpoints as a black-box contract.
+ * Uses Playwright's request context to make HTTP calls.
  */
 import { test, expect } from "@playwright/test";
 
-const API_BASE = "http://localhost:3200";
+const API_BASE = "http://localhost:3050";
 
 test.describe("web <-> api: health check", () => {
-  test("GET /health returns 200 with status ok", async ({ request }) => {
-    const response = await request.get(`${API_BASE}/health`);
+  test("GET /api/health returns 200 with ok field", async ({ request }) => {
+    const response = await request.get(`${API_BASE}/api/health`);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    expect(body.status).toBe("ok");
-    expect(body.timestamp).toBeTruthy();
+    expect(body).toHaveProperty("ok");
+    expect(typeof body.ok).toBe("boolean");
   });
 });
 

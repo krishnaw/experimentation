@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "dev": "pnpm --filter web dev",
     "dev:web": "pnpm --filter web dev",
-    "dev:api": "pnpm --filter api dev",
-    "build:web": "pnpm --filter web build",
-    "build:api": "pnpm --filter api build",
-    "dev:dashboard": "pnpm --filter dashboard dev",
-    "build:dashboard": "pnpm --filter dashboard build",
-    "test": "pnpm --filter api test && pnpm --filter dashboard test",
+    "build": "cross-env NODE_ENV=production pnpm --filter web build",
+    "build:web": "cross-env NODE_ENV=production pnpm --filter web build",
+    "test": "pnpm --filter web test",
     "test:e2e": "playwright test",
     "test:e2e:report": "playwright show-report",
     "test:integration": "playwright test --config playwright.integration.config.ts",
@@ -21,12 +19,6 @@
     "start:web": "bash scripts/start.sh web",
     "stop:web": "bash scripts/stop.sh web",
     "restart:web": "bash scripts/restart.sh web",
-    "start:dashboard": "bash scripts/start.sh dashboard",
-    "stop:dashboard": "bash scripts/stop.sh dashboard",
-    "restart:dashboard": "bash scripts/restart.sh dashboard",
-    "start:api": "bash scripts/start.sh api",
-    "stop:api": "bash scripts/stop.sh api",
-    "restart:api": "bash scripts/restart.sh api",
     "start:docker": "bash scripts/start.sh docker",
     "stop:docker": "bash scripts/stop.sh docker",
     "demo:reset": "bash scripts/demo-reset.sh"
@@ -34,6 +26,7 @@
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@vitest/coverage-v8": "^4.0.18",
+    "cross-env": "^10.1.0",
     "playwright": "^1.58.2",
     "vitest": "^4.0.18"
   }

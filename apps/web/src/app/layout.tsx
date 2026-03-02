@@ -9,8 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ShopDemo - Modern E-commerce",
-  description: "AI-powered experimentation demo store",
+  title: "Experimentation Platform",
+  description: "AI-powered experimentation platform with DemoApp1, DemoApp2, Control Room, and Exp Engine",
 };
 
 export default function RootLayout({

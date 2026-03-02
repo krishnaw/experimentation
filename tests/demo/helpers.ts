@@ -6,7 +6,7 @@ export const SCREENSHOT_DIR = "scripts/screenshots/demo";
 mkdirSync(SCREENSHOT_DIR, { recursive: true });
 
 /**
- * Send a message in the chat (works for both ShopDemo sidebar and Dashboard).
+ * Send a message in the chat (works for both DemoApp1 sidebar and Dashboard).
  */
 export async function sendChatMessage(page: Page, text: string) {
   const textarea = page.locator("textarea");
@@ -38,20 +38,20 @@ export async function waitForChatResponse(
 }
 
 /**
- * Reload the page with fresh GrowthBook features, bypassing every caching layer:
+ * Reload the page with fresh Exp Engine features, bypassing every caching layer:
  *
- *   1. Polls the GrowthBook SDK endpoint (Playwright request context) until the
+ *   1. Polls the Exp Engine SDK endpoint (Playwright request context) until the
  *      feature appears — confirms the server has the new data before we reload.
  *   2. Intercepts the browser's fetch to /api/features/* and appends a
- *      ?_cb=<epoch> cache-bust query param. GrowthBook ignores unknown query
+ *      ?_cb=<epoch> cache-bust query param. Exp Engine ignores unknown query
  *      params (only the clientKey path segment matters), so this is safe.
  *      The busted URL bypasses Chrome's in-memory HTTP cache (which persists
- *      across reloads even with --disable-cache) and GrowthBook's server-side
+ *      across reloads even with --disable-cache) and Exp Engine's server-side
  *      response cache simultaneously.
  *   3. Strips Cache-Control / ETag / Last-Modified from the intercepted response
  *      so the browser won't cache this fresh payload either.
  *   4. Clears localStorage gbFeaturesCache so the SDK doesn't use a stale snapshot.
- *   5. Reloads and waits for networkidle — ensures the GrowthBook SDK fetch
+ *   5. Reloads and waits for networkidle — ensures the Exp Engine SDK fetch
  *      completes before the caller checks the UI.
  *
  * Falls back to a 2s wait if request/clientKey/featureId are not provided.
@@ -76,7 +76,7 @@ export async function reloadWithFreshFeatures(
     await page.waitForTimeout(2000);
   }
 
-  // Intercept the browser's GrowthBook features fetch and force a truly fresh
+  // Intercept the browser's Exp Engine features fetch and force a truly fresh
   // response by appending an epoch cache-bust query param to the request URL.
   const cacheBust = Date.now();
   await page.route("**/api/features/**", async (route) => {
@@ -93,13 +93,13 @@ export async function reloadWithFreshFeatures(
   });
 
   await page.evaluate(() => localStorage.removeItem("gbFeaturesCache"));
-  // networkidle ensures the GrowthBook SDK fetch completes before we assert UI
+  // networkidle ensures the Exp Engine SDK fetch completes before we assert UI
   await page.reload({ waitUntil: "networkidle" });
   await page.unroute("**/api/features/**");
 }
 
 /**
- * Poll the GrowthBook SDK endpoint directly until the feature appears, or timeout.
+ * Poll the Exp Engine SDK endpoint directly until the feature appears, or timeout.
  * Returns true if the feature became visible within the timeout.
  */
 export async function waitForFeatureInSDK(
@@ -121,7 +121,7 @@ export async function waitForFeatureInSDK(
 }
 
 /**
- * Delete a GrowthBook feature flag via the admin API.
+ * Delete an Exp Engine feature flag via the admin API.
  * Silently ignores 404 (feature didn't exist).
  */
 export async function deleteGrowthBookFeature(
@@ -143,8 +143,8 @@ export async function deleteGrowthBookFeature(
 }
 
 /**
- * Delete a GrowthBook experiment directly via MongoDB.
- * GrowthBook REST API v1 (v4.3.0) does not support DELETE /experiments/{id}.
+ * Delete an Exp Engine experiment directly via MongoDB.
+ * Exp Engine REST API v1 (v4.3.0) does not support DELETE /experiments/{id}.
  * We go to MongoDB via docker exec. execFileSync (not execSync) avoids shell
  * injection — the eval script is passed as a separate argument, not shell-expanded.
  */
@@ -169,7 +169,7 @@ export async function deleteGrowthBookExperiment(
 }
 
 /**
- * Find experiments by name via the GrowthBook admin API.
+ * Find experiments by name via the Exp Engine admin API.
  */
 export async function findExperimentsByName(
   request: APIRequestContext,

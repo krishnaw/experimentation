@@ -4,10 +4,10 @@
  * Story: A single AI message can show or hide entire page sections for all users.
  *
  * Steps:
- *   1. ShopDemo loads — "Best Sellers" section is HIDDEN (flag doesn't exist → false)
+ *   1. DemoApp1 loads — "Best Sellers" section is HIDDEN (flag doesn't exist → false)
  *   2. Dashboard chat (port 4000): "Enable the featured-section-enabled flag"
  *   3. AI calls create_feature → flag created with value true
- *   4. ShopDemo reloads → Best Sellers section appears
+ *   4. DemoApp1 reloads → Best Sellers section appears
  *
  * Visual proof: 02a-no-best-sellers.png → 02c-best-sellers-visible.png
  */
@@ -52,13 +52,13 @@ test.describe("Demo 2: Boolean Flag → Section Visibility", () => {
       await page.screenshot({
         path: `${SCREENSHOT_DIR}/02a-before-no-best-sellers.png`,
       });
-      console.log("\n  📸 02a — ShopDemo: Best Sellers hidden (before)");
+      console.log("\n  📸 02a — DemoApp1: Best Sellers hidden (before)");
     });
 
     // ── Step 2: Use Dashboard chat (port 4000) to create the feature flag ──
     await test.step("Step 2 — Ask AI to create featured-section-enabled = true", async () => {
       const dashPage = await context.newPage();
-      await dashPage.goto("http://localhost:4000", { waitUntil: "networkidle" });
+      await dashPage.goto("http://localhost:3050/dashboard", { waitUntil: "networkidle" });
       await dashPage.waitForSelector("textarea", { state: "visible" });
 
       const prompt =
@@ -80,7 +80,7 @@ test.describe("Demo 2: Boolean Flag → Section Visibility", () => {
 
     // ── Step 3: Reload → Best Sellers section now visible ──────────────────
     await test.step("Step 3 — Reload page → Best Sellers section appears", async () => {
-      // Poll GrowthBook SDK endpoint until the feature is served, then reload
+      // Poll Exp Engine SDK endpoint until the feature is served, then reload
       // with cleared localStorage. More reliable than a fixed timeout.
       await reloadWithFreshFeatures(page, {
         request,
@@ -88,14 +88,14 @@ test.describe("Demo 2: Boolean Flag → Section Visibility", () => {
         featureId: "featured-section-enabled",
       });
 
-      // GrowthBook SDK init() is async — section appears when features arrive (allow up to 12s)
+      // Exp Engine SDK init() is async — section appears when features arrive (allow up to 12s)
       const bestSellers = page.locator('h2:has-text("Best Sellers")');
       await expect(bestSellers).toBeVisible({ timeout: 12000 });
 
       await page.screenshot({
         path: `${SCREENSHOT_DIR}/02c-after-best-sellers-visible.png`,
       });
-      console.log("\n  📸 02c — ShopDemo: Best Sellers now visible (after)");
+      console.log("\n  📸 02c — DemoApp1: Best Sellers now visible (after)");
       console.log("     Section appeared after AI created the boolean flag");
     });
 

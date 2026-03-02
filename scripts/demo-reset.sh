@@ -2,7 +2,7 @@
 # scripts/demo-reset.sh — Pre-demo reset and health check
 #
 # Cleans all leftover demo state, validates servers are healthy,
-# and warms up GrowthBook's server-side response cache.
+# and warms up Exp Engine's server-side response cache.
 #
 # Usage: ./scripts/demo-reset.sh
 # Run this before every live demo session.
@@ -67,12 +67,10 @@ check_server() {
   fi
 }
 
-check_server "ShopDemo"   "http://localhost:3050"
-check_server "Dashboard"  "http://localhost:4000"
-check_server "API"        "http://localhost:3200/health"
-check_server "GrowthBook" "http://localhost:3100/healthcheck"
+check_server "DemoApp1"  "http://localhost:3050"
+check_server "Exp Engine" "http://localhost:3100/healthcheck"
 
-# ── 4. Clean leftover demo state from GrowthBook ─────────────────────────────
+# ── 4. Clean leftover demo state from Exp Engine ──────────────────────────────
 echo ""
 echo "  Cleaning demo state..."
 
@@ -107,9 +105,9 @@ else
   green "Demo state cleaned"
 fi
 
-# ── 5. Warm up GrowthBook server-side response cache ─────────────────────────
+# ── 5. Warm up Exp Engine server-side response cache ──────────────────────────
 echo ""
-echo "  Warming GrowthBook cache..."
+echo "  Warming Exp Engine cache..."
 if [ -n "$NEXT_PUBLIC_GROWTHBOOK_CLIENT_KEY" ]; then
   node -e "
     const warmup = async () => {
@@ -122,7 +120,7 @@ if [ -n "$NEXT_PUBLIC_GROWTHBOOK_CLIENT_KEY" ]; then
     };
     warmup();
   " 2>/dev/null
-  green "GrowthBook SDK endpoint warmed (3 requests)"
+  green "Exp Engine SDK endpoint warmed (3 requests)"
 else
   yellow "Skipping cache warmup — client key not set"
 fi
@@ -136,7 +134,7 @@ if [ "$FAIL" -eq 0 ]; then
   echo "  Before each demo scenario, navigate to:"
   echo "    http://localhost:3050/?reset   (clears SDK cache + localStorage)"
   echo ""
-  echo "  After creating a flag via chat, wait ~2s then reload the ShopDemo."
+  echo "  After creating a flag via chat, wait ~2s then reload DemoApp1."
 else
   echo "  🔴 NOT READY — $FAIL issue(s) found, $WARN warning(s)"
   echo "     Fix the errors above before starting the demo."

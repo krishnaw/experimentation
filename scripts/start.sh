@@ -1,6 +1,6 @@
 #!/bin/bash
 # scripts/start.sh — Start one or all servers
-# Usage: ./scripts/start.sh [web|dashboard|api|docker|all]
+# Usage: ./scripts/start.sh [web|docker|all]
 # Default: all
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -57,25 +57,19 @@ start_docker() {
   echo "  GrowthBook API: http://localhost:3100"
 }
 
-start_web()       { start_server "web"       "3050" "pnpm --filter web dev"; }
-start_dashboard() { start_server "dashboard" "4000" "pnpm --filter dashboard dev"; }
-start_api()       { start_server "api"       "3200" "pnpm --filter api dev"; }
+start_web() { start_server "web" "3050" "pnpm --filter web dev"; }
 
 TARGET="${1:-all}"
 echo "==> start: $TARGET"
 case "$TARGET" in
   web)       start_web ;;
-  dashboard) start_dashboard ;;
-  api)       start_api ;;
   docker)    start_docker ;;
   all)
     start_docker
     start_web
-    start_dashboard
-    start_api
     ;;
   *)
-    echo "Usage: $0 [web|dashboard|api|docker|all]"
+    echo "Usage: $0 [web|docker|all]"
     exit 1
     ;;
 esac
