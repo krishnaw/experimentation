@@ -93,9 +93,10 @@ test.describe("Demo 6 — Frequent Shopper Deals Grid", () => {
     await expect(gridLayout).toBeVisible({ timeout: 10000 });
     console.log("  [Step 2] PASS: Grid layout (div.grid.grid-cols-2) visible for Sarah (frequent).");
 
+    await gridLayout.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
     await page.screenshot({
       path: `${SCREENSHOT_DIR}/06b-sarah-frequent-grid.png`,
-      fullPage: true,
     });
     console.log("  [Step 2] Screenshot: 06b-sarah-frequent-grid.png");
 
@@ -112,9 +113,10 @@ test.describe("Demo 6 — Frequent Shopper Deals Grid", () => {
     // Note: we do NOT assert grid is absent — div.grid.grid-cols-2 also matches FreshSection's
     // internal grids. The positive scroll assertion is sufficient to confirm the control experience.
 
+    await scrollLayout.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
     await page.screenshot({
       path: `${SCREENSHOT_DIR}/06c-marcus-occasional-scroll.png`,
-      fullPage: true,
     });
     console.log("  [Step 3] Screenshot: 06c-marcus-occasional-scroll.png");
 

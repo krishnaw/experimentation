@@ -160,6 +160,8 @@ test.describe("Demo 8: Regional Price Sort (California)", () => {
       const dealsTitle = page.locator('h2, h3').filter({ hasText: "Your Exclusive Deals" }).first();
       await expect(dealsTitle).toBeVisible({ timeout: 10000 });
 
+      await dealsTitle.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(300);
       await page.screenshot({ path: `${SCREENSHOT_DIR}/08b-sarah-price-sorted-deals.png` });
       console.log("\n  📸 08b — DemoApp2: Sarah Chen's personalized price-sorted deals view");
       console.log('     Gold member sees "Your Exclusive Deals" title');

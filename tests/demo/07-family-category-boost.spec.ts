@@ -120,6 +120,8 @@ test.describe("Demo 7: Family Category Boost", () => {
 
       await expect(firstCategorySpan).toContainText("Snacks");
 
+      await firstCategorySpan.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(300);
       await page.screenshot({ path: `${SCREENSHOT_DIR}/07b-sarah-snacks-first.png` });
       console.log("  📸 07b — DemoApp2: Sarah Chen sees Snacks & Chips first (family boost active)");
     });
@@ -139,6 +141,8 @@ test.describe("Demo 7: Family Category Boost", () => {
       await expect(firstCategorySpan).not.toContainText("Snacks");
       await expect(firstCategorySpan).toContainText("Meat");
 
+      await firstCategorySpan.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(300);
       await page.screenshot({ path: `${SCREENSHOT_DIR}/07c-robert-meat-first.png` });
       console.log("  📸 07c — DemoApp2: Robert Williams sees Meat & Seafood first (no family boost)");
     });

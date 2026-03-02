@@ -184,9 +184,10 @@ test.describe("Demo 9: Senior Household — Hidden Fresh Section", () => {
       await expect(welcomeHeading).not.toBeVisible({ timeout: 5000 });
       console.log("  [Step 4] PASS: 'Welcome to Safeway!' NOT visible for Sarah (not a new member).");
 
+      await rewardsHeading.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(300);
       await page.screenshot({
         path: `${SCREENSHOT_DIR}/09d-sarah-fresh-rewards.png`,
-        fullPage: true,
       });
       console.log("  [Step 4] Screenshot: 09d-sarah-fresh-rewards.png");
       console.log("  [Step 4] Sarah: Fresh section + rewards panel, no welcome ✓");

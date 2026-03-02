@@ -238,9 +238,10 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
     const gridLayout = page.locator("div.grid.grid-cols-2").first();
     await expect(gridLayout).toBeVisible({ timeout: 10000 });
     console.log("  [Step 5] PASS: Grid layout visible for Sarah Chen after rollout.");
+    await gridLayout.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
     await page.screenshot({
       path: `${SCREENSHOT_DIR}/10d-sarah-grid-after-rollout.png`,
-      fullPage: true,
     });
     console.log("  [Step 5] Screenshot: 10d-sarah-grid-after-rollout.png");
 
