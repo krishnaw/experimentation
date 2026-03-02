@@ -1,0 +1,111 @@
+{
+  "passed": 1,
+  "failed": 8,
+  "failures": [
+    {
+      "num": 1,
+      "label": "Cover Page",
+      "issues": ""
+    },
+    {
+      "num": 2,
+      "label": "Meet the Platform (DemoApp2 + Control Room overviews)",
+      "issues": ""
+    },
+    {
+      "num": 3,
+      "label": "The Story — Before/After with chat screenshots (Demo 1)",
+      "issues": ""
+    },
+    {
+      "num": 4,
+      "label": "Personas — Six customers + Gold Member Hero Banner (Demo 5)",
+      "issues": ""
+    },
+    {
+      "num": 5,
+      "label": "Five Experiments overview cards",
+      "issues": ""
+    },
+    {
+      "num": 6,
+      "label": "Experiment 2 (Frequent Shopper Grid) + Experiment 3 (Family Category Boost)",
+      "issues": ""
+    },
+    {
+      "num": 7,
+      "label": "Experiments 4 (Regional Price Sort) + 5 (Senior Fresh Section) with chat screenshot",
+      "issues": "- **Experiment 4 caption claims \"California Price Sort\" but the screenshot shows a standard category grid layout (Meat & Poultry, Produce, Yogurt, etc.) — no price-sorted or regionally differentiated product listings are visible**\n- **Experiment 5 has multiple chat/control room screenshots but they lack clarity on what the actual user question was and what the AI response contained — the images are too small/compressed to read the chat content with confidence**\n- **The \"Your Gold Member Rewards\" hero banner appears in multiple Experiment 5 variations but it's unclear which variation corresponds to which targeting rule (the captions don't clearly map each screenshot to its specific boolean flag outcome)**\n- **\"Shop What's Fresh\" section shows product images but the caption references \"Emily Rodriguez (test shopper)\" and a \"personalized welcome message\" — the personalization element is not visibly distinguishable in the screenshot**\n- **Control Room screenshot at bottom is difficult to read — table text and labels are too small for a C-suite presentation**\n- **The page does not clearly demonstrate the \"three different outcomes for three different segments\" claim in Experiment 5 — it's unclear which screenshots represent which segment/rule combination**\n- **Spacing and layout feel crowded; some screenshots appear cut off or awkwardly aligned vertically**"
+    },
+    {
+      "num": 8,
+      "label": "Demo 10 — Full A/B Lifecycle (experiment created, results, rollout, verification)",
+      "issues": ""
+    }
+  ],
+  "pages": [
+    {
+      "num": 1,
+      "label": "Cover Page",
+      "pass": false,
+      "issues": "",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-01.png"
+    },
+    {
+      "num": 2,
+      "label": "Meet the Platform (DemoApp2 + Control Room overviews)",
+      "pass": false,
+      "issues": "",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-02.png"
+    },
+    {
+      "num": 3,
+      "label": "The Story — Before/After with chat screenshots (Demo 1)",
+      "pass": false,
+      "issues": "",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-03.png"
+    },
+    {
+      "num": 4,
+      "label": "Personas — Six customers + Gold Member Hero Banner (Demo 5)",
+      "pass": false,
+      "issues": "",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-04.png"
+    },
+    {
+      "num": 5,
+      "label": "Five Experiments overview cards",
+      "pass": false,
+      "issues": "",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-05.png"
+    },
+    {
+      "num": 6,
+      "label": "Experiment 2 (Frequent Shopper Grid) + Experiment 3 (Family Category Boost)",
+      "pass": false,
+      "issues": "",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-06.png"
+    },
+    {
+      "num": 7,
+      "label": "Experiments 4 (Regional Price Sort) + 5 (Senior Fresh Section) with chat screenshot",
+      "pass": false,
+      "issues": "- **Experiment 4 caption claims \"California Price Sort\" but the screenshot shows a standard category grid layout (Meat & Poultry, Produce, Yogurt, etc.) — no price-sorted or regionally differentiated product listings are visible**\n- **Experiment 5 has multiple chat/control room screenshots but they lack clarity on what the actual user question was and what the AI response contained — the images are too small/compressed to read the chat content with confidence**\n- **The \"Your Gold Member Rewards\" hero banner appears in multiple Experiment 5 variations but it's unclear which variation corresponds to which targeting rule (the captions don't clearly map each screenshot to its specific boolean flag outcome)**\n- **\"Shop What's Fresh\" section shows product images but the caption references \"Emily Rodriguez (test shopper)\" and a \"personalized welcome message\" — the personalization element is not visibly distinguishable in the screenshot**\n- **Control Room screenshot at bottom is difficult to read — table text and labels are too small for a C-suite presentation**\n- **The page does not clearly demonstrate the \"three different outcomes for three different segments\" claim in Experiment 5 — it's unclear which screenshots represent which segment/rule combination**\n- **Spacing and layout feel crowded; some screenshots appear cut off or awkwardly aligned vertically**",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-07.png"
+    },
+    {
+      "num": 8,
+      "label": "Demo 10 — Full A/B Lifecycle (experiment created, results, rollout, verification)",
+      "pass": false,
+      "issues": "",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-08.png"
+    },
+    {
+      "num": 9,
+      "label": "Architecture + Timing table",
+      "pass": true,
+      "issues": "none\n\nThis is a text-only, design-focused page with no screenshots. It contains:\n- Clear section headers and professional typography\n- A well-structured 6-step architecture table with readable column headers and content\n- A highlighted callout box explaining \"Zero experiment logic in the browser\" with proper visual emphasis\n- Four Q&A items with icons and concise answers\n- A clean demo timing schedule (0:00–20:00) with 11 clearly labeled segments\n- A closing summary sentence in a green accent box with proper visual hierarchy\n\nAll text is readable, professionally formatted, and logically organized. The page serves its purpose as a reference guide for the demo structure and timing without requiring any screenshots.",
+      "imagePath": "C:\\Users\\krish\\Documents\\projects\\experimentation\\scripts\\screenshots\\audit\\page-09.png"
+    }
+  ]
+}

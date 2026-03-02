@@ -78,7 +78,15 @@ test.describe("Demo 9: Senior Household — Hidden Fresh Section", () => {
         document.querySelectorAll<HTMLElement>('[class*="overflow-y-auto"]').forEach(el => { el.scrollTop = 0; });
       });
       await dashPage.waitForTimeout(200);
-      await dashPage.screenshot({ path: `${SCREENSHOT_DIR}/09a-ai-creates-flag.png`, fullPage: true });
+      await dashPage.waitForSelector('text=Connected to Exp Engine', { timeout: 8000 }).catch(async () => {
+        await dashPage.reload({ waitUntil: 'networkidle' });
+        await dashPage.waitForSelector('text=Connected to Exp Engine', { timeout: 5000 }).catch(() => {});
+      });
+      await dashPage.evaluate(() => {
+        document.querySelectorAll<HTMLElement>('[class*="overflow-y-auto"]').forEach(el => { el.scrollTop = 0; });
+      });
+      await dashPage.waitForTimeout(200);
+      await dashPage.screenshot({ path: `${SCREENSHOT_DIR}/09a-ai-creates-flag.png` });
       console.log("  [Step 1] Screenshot: 09a-ai-creates-flag.png");
       await dashPage.close();
 
@@ -134,7 +142,6 @@ test.describe("Demo 9: Senior Household — Hidden Fresh Section", () => {
 
       await page.screenshot({
         path: `${SCREENSHOT_DIR}/09b-robert-no-fresh-section.png`,
-        fullPage: true,
       });
       console.log("  [Step 2] Screenshot: 09b-robert-no-fresh-section.png");
       console.log("  [Step 2] Robert: Fresh section hidden ✓");
@@ -158,9 +165,11 @@ test.describe("Demo 9: Senior Household — Hidden Fresh Section", () => {
       await expect(welcomeHeading).toBeVisible({ timeout: 10000 });
       console.log("  [Step 3] PASS: 'Welcome to Safeway!' message visible for Emily (new member).");
 
+      // Scroll welcome message into view so it's clearly visible in the screenshot
+      await welcomeHeading.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(300);
       await page.screenshot({
         path: `${SCREENSHOT_DIR}/09c-emily-fresh-welcome.png`,
-        fullPage: true,
       });
       console.log("  [Step 3] Screenshot: 09c-emily-fresh-welcome.png");
       console.log("  [Step 3] Emily: Fresh section + welcome visible ✓");
@@ -218,7 +227,6 @@ test.describe("Demo 9: Senior Household — Hidden Fresh Section", () => {
 
       await dashPage.screenshot({
         path: `${SCREENSHOT_DIR}/09e-flag-status.png`,
-        fullPage: true,
       });
       console.log(`  [Step 5] AI responded in ${elapsed}s`);
       console.log("  [Step 5] Screenshot: 09e-flag-status.png");

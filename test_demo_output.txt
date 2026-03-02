@@ -1,0 +1,169 @@
+
+> experimentation-platform@1.0.0 test:demo C:\Users\krish\Documents\projects\experimentation
+> playwright test --config playwright.demo.config.ts
+
+
+  ✓ Loaded 7 env vars from apps/web/.env.local
+
+Running 4 tests using 4 workers
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  DEMO 4: API Sort Order — Live Feature Flag Control
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  DEMO 3: Full Experiment Lifecycle via Chat
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  DEMO 2: Boolean Flag → Show / Hide Page Section
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  DEMO 1: Feature Flag → Instant UI Change
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  📸 04a — API: popularity sort (before)
+     First 3: Wireless Noise-Cancelling Headphones (pop:95), Smart Fitness Watch (pop:91), Waterproof Bluetooth Speaker (pop:90)
+
+  📸 01a — ShopDemo: grid layout (before)
+     Layout badge: "grid"
+
+  📸 02a — ShopDemo: Best Sellers hidden (before)
+
+  💬 Sending: "Update the feature flag "product-sort-order" to have a default value of "price""
+
+  💬 Sending: "Create a boolean feature flag with id "featured-section-enabled" and default value "true""
+
+  💬 Sending: "Create a string feature flag with id "product-card-layout" and default value "large-image""
+  ✅ AI responded in 0.7s
+  📸 02b — Chat confirmation screenshot saved
+  ✅ AI responded in 0.7s
+  📸 01b — Chat confirmation screenshot saved
+  ✅ AI responded in 0.8s
+  📸 04b — Dashboard: AI confirms price sort update
+  🗑  Deleted existing feature: product-sort-order
+  🧹 Cleanup: deleted product-sort-order
+  ✘  1 [chromium] › tests\demo\04-api-sort-order.spec.ts:90:7 › Demo 4: API Sort Order via Chat › AI updates sort order flag → API immediately re-sorts products (2.9s)
+  🧹 Cleanup: deleted product-card-layout
+  🧹 Cleanup: deleted featured-section-enabled
+  ✘  3 [chromium] › tests\demo\02-featured-section.spec.ts:37:7 › Demo 2: Boolean Flag → Section Visibility › AI creates boolean flag → Best Sellers section appears on page (36.1s)
+  ✘  4 [chromium] › tests\demo\01-layout-flip.spec.ts:38:7 › Demo 1: Feature Flag → Live Layout Change › AI creates feature flag → product layout changes from grid to large-image (36.1s)
+  🧹 Cleanup: deleted Hero Banner Test experiment(s)
+  ✘  2 [chromium] › tests\demo\03-experiment-launch.spec.ts:48:7 › Demo 3: Experiment Lifecycle via Dashboard › full conversation: list → create experiment → list feature flags (4.5m)
+
+
+  1) [chromium] › tests\demo\01-layout-flip.spec.ts:38:7 › Demo 1: Feature Flag → Live Layout Change › AI creates feature flag → product layout changes from grid to large-image › Step 3 — Reload page → large-image layout active 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  locator('span.uppercase.bg-indigo-50')
+    Expected: [32m"large-image"[39m
+    Received: [31m"grid"[39m
+    Timeout:  12000ms
+
+    Call log:
+    [2m  - Expect "toHaveText" with timeout 12000ms[22m
+    [2m  - waiting for locator('span.uppercase.bg-indigo-50')[22m
+    [2m    15 × locator resolved to <span class="px-2.5 py-1 bg-indigo-50 text-indigo-600 rounded-md font-medium text-xs uppercase">grid</span>[22m
+    [2m       - unexpected value "grid"[22m
+
+
+      91 |       // GrowthBook SDK init() is async — badge re-renders when features arrive (allow up to 12s)
+      92 |       const badge = page.locator("span.uppercase.bg-indigo-50");
+    > 93 |       await expect(badge).toHaveText("large-image", { timeout: 12000 });
+         |                           ^
+      94 |
+      95 |       await page.screenshot({
+      96 |         path: `${SCREENSHOT_DIR}/01c-after-large-image-layout.png`,
+        at C:\Users\krish\Documents\projects\experimentation\tests\demo\01-layout-flip.spec.ts:93:27
+        at C:\Users\krish\Documents\projects\experimentation\tests\demo\01-layout-flip.spec.ts:84:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\01-layout-flip-Demo-1-Feat-88420-es-from-grid-to-large-image-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\01-layout-flip-Demo-1-Feat-88420-es-from-grid-to-large-image-chromium\error-context.md
+
+  2) [chromium] › tests\demo\02-featured-section.spec.ts:37:7 › Demo 2: Boolean Flag → Section Visibility › AI creates boolean flag → Best Sellers section appears on page › Step 3 — Reload page → Best Sellers section appears 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('h2:has-text("Best Sellers")')
+    Expected: visible
+    Timeout: 12000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 12000ms[22m
+    [2m  - waiting for locator('h2:has-text("Best Sellers")')[22m
+
+
+      91 |       // GrowthBook SDK init() is async — section appears when features arrive (allow up to 12s)
+      92 |       const bestSellers = page.locator('h2:has-text("Best Sellers")');
+    > 93 |       await expect(bestSellers).toBeVisible({ timeout: 12000 });
+         |                                 ^
+      94 |
+      95 |       await page.screenshot({
+      96 |         path: `${SCREENSHOT_DIR}/02c-after-best-sellers-visible.png`,
+        at C:\Users\krish\Documents\projects\experimentation\tests\demo\02-featured-section.spec.ts:93:33
+        at C:\Users\krish\Documents\projects\experimentation\tests\demo\02-featured-section.spec.ts:82:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\02-featured-section-Demo-2-1073e-ers-section-appears-on-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\02-featured-section-Demo-2-1073e-ers-section-appears-on-page-chromium\error-context.md
+
+  3) [chromium] › tests\demo\03-experiment-launch.spec.ts:48:7 › Demo 3: Experiment Lifecycle via Dashboard › full conversation: list → create experiment → list feature flags › Step 1 — Open Experiment Manager dashboard 
+
+    [31mTest timeout of 270000ms exceeded.[39m
+
+    Error: page.waitForFunction: Test timeout of 270000ms exceeded.
+
+      61 |
+      62 |       // Allow a few seconds for the connectivity check to resolve
+    > 63 |       await page.waitForFunction(
+         |                  ^
+      64 |         () => {
+      65 |           const header = document.querySelector("header");
+      66 |           return (
+        at C:\Users\krish\Documents\projects\experimentation\tests\demo\03-experiment-launch.spec.ts:63:18
+        at C:\Users\krish\Documents\projects\experimentation\tests\demo\03-experiment-launch.spec.ts:55:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\03-experiment-launch-Demo--fb708-riment-→-list-feature-flags-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\03-experiment-launch-Demo--fb708-riment-→-list-feature-flags-chromium\error-context.md
+
+  4) [chromium] › tests\demo\04-api-sort-order.spec.ts:90:7 › Demo 4: API Sort Order via Chat › AI updates sort order flag → API immediately re-sorts products › Step 3 — API returns products sorted by price (no restart needed) 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"p[7mrice[27m"[39m
+    Received: [31m"p[7mopularity[27m"[39m
+
+      140 |       expect(res.ok()).toBeTruthy();
+      141 |       const data = await res.json();
+    > 142 |       expect(data.meta.sortOrder).toBe("price");
+          |                                   ^
+      143 |
+      144 |       // Verify price order: each product's price <= next product's price
+      145 |       const prices = data.products.map((p: { price: number }) => p.price);
+        at C:\Users\krish\Documents\projects\experimentation\tests\demo\04-api-sort-order.spec.ts:142:35
+        at C:\Users\krish\Documents\projects\experimentation\tests\demo\04-api-sort-order.spec.ts:138:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\04-api-sort-order-Demo-4-A-dd53e-mediately-re-sorts-products-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\04-api-sort-order-Demo-4-A-dd53e-mediately-re-sorts-products-chromium\error-context.md
+
+  4 failed
+    [chromium] › tests\demo\01-layout-flip.spec.ts:38:7 › Demo 1: Feature Flag → Live Layout Change › AI creates feature flag → product layout changes from grid to large-image 
+    [chromium] › tests\demo\02-featured-section.spec.ts:37:7 › Demo 2: Boolean Flag → Section Visibility › AI creates boolean flag → Best Sellers section appears on page 
+    [chromium] › tests\demo\03-experiment-launch.spec.ts:48:7 › Demo 3: Experiment Lifecycle via Dashboard › full conversation: list → create experiment → list feature flags 
+    [chromium] › tests\demo\04-api-sort-order.spec.ts:90:7 › Demo 4: API Sort Order via Chat › AI updates sort order flag → API immediately re-sorts products 
+ ELIFECYCLE  Command failed with exit code 1.

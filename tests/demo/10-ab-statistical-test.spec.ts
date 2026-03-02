@@ -104,15 +104,14 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
       console.log(`  [Step 2] AI chat timed out — proceeding with API fallback`);
     }
     // Extra settle time so streamed response content fully renders before screenshot
-    await dashPage.waitForTimeout(1500);
+    await dashPage.waitForTimeout(2000);
     // Scroll chat panel to top so user prompt is visible alongside the response
     await dashPage.evaluate(() => {
       document.querySelectorAll<HTMLElement>('[class*="overflow-y-auto"]').forEach(el => { el.scrollTop = 0; });
     });
-    await dashPage.waitForTimeout(200);
+    await dashPage.waitForTimeout(300);
     await dashPage.screenshot({
       path: `${SCREENSHOT_DIR}/10a-experiment-created.png`,
-      fullPage: true,
     });
     console.log("  [Step 2] Screenshot: 10a-experiment-created.png");
     await dashPage.close();
@@ -191,15 +190,14 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
       console.log("  [Step 3] AI results timed out");
     }
     // Extra settle time so streamed response content fully renders before screenshot
-    await resultsPage.waitForTimeout(1500);
+    await resultsPage.waitForTimeout(2000);
     // Scroll chat panel to top so user prompt is visible alongside the response
     await resultsPage.evaluate(() => {
       document.querySelectorAll<HTMLElement>('[class*="overflow-y-auto"]').forEach(el => { el.scrollTop = 0; });
     });
-    await resultsPage.waitForTimeout(200);
+    await resultsPage.waitForTimeout(300);
     await resultsPage.screenshot({
       path: `${SCREENSHOT_DIR}/10b-statistical-results.png`,
-      fullPage: true,
     });
     console.log("  [Step 3] Screenshot: 10b-statistical-results.png");
     await resultsPage.close();
@@ -232,7 +230,6 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
     }
     await rolloutPage.screenshot({
       path: `${SCREENSHOT_DIR}/10c-rollout-applied.png`,
-      fullPage: true,
     });
     console.log("  [Step 4] Screenshot: 10c-rollout-applied.png");
 
@@ -283,7 +280,6 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
     console.log("  [Step 6] PASS: Grid layout visible for Jordan Lee — rollout confirmed.");
     await page.screenshot({
       path: `${SCREENSHOT_DIR}/10e-jordan-grid-after-rollout.png`,
-      fullPage: true,
     });
     console.log("  [Step 6] Screenshot: 10e-jordan-grid-after-rollout.png");
 

@@ -99,14 +99,16 @@ async function judgePage(pageNum, imagePath, totalPages, label) {
 
 This page is: "${label}"
 
-Judge this page ruthlessly. Specific things that MUST pass:
-- Screenshots must show what captions say (e.g. if caption says "deals grid", the screenshot must show a deals grid — not a hero banner or unrelated section)
+Judge this page ruthlessly. Key context: ALL app screenshots are from DemoApp2, a Safeway grocery store app (hero banners, deals grid, categories, fresh produce section). There is NO DemoApp1 in this PDF.
+
+Specific things that MUST pass:
+- Screenshots must show what captions say (e.g. if caption says "deals grid", the screenshot must show a deals grid with grocery product cards — not a hero banner)
 - Chat screenshots must show BOTH the user's question AND the AI's response with actual content (not empty boxes, not "Attempt again...", not just a header with no response)
-- App screenshots must show the right persona/section described in the caption
+- App screenshots must show the right persona/section described in the caption (grocery store UI)
 - No "Exp Engine offline" errors visible in the UI of any screenshot
 - Text must be readable and professionally formatted
 - Nothing should look broken, cut off awkwardly, or misaligned
-- Overview screenshots of the app should make a strong first impression
+- Overview screenshots of the Safeway app should make a strong first impression
 
 For cover pages and text-only pages (no screenshots expected), simply verify the text is readable and the design looks professional.
 
@@ -149,6 +151,10 @@ ISSUES: bullet list of specific problems (write "none" if PASS)`,
 }
 
 // ── Main loop ──────────────────────────────────────────────────────────────
+import { writeFileSync } from "fs";
+
+const RESULTS_PATH = join(ROOT, "scripts", "audit-results.json");
+
 console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 console.log("  PDF AUDIT — Leader-Grade Review (chapter by chapter)");
 console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
@@ -160,10 +166,12 @@ console.log(`  Captured ${pages.length} chapters. Sending to judge...\n`);
 let passed = 0;
 let failed = 0;
 const failures = [];
+const results = [];
 
 for (const { num, path: imagePath, label } of pages) {
   process.stdout.write(`  Chapter ${String(num).padStart(2)} / ${pages.length}  [${label}] ... `);
   const { pass, issues } = await judgePage(num, imagePath, pages.length, label);
+  results.push({ num, label, pass, issues, imagePath });
   if (pass) {
     console.log("✅ PASS");
     passed++;
@@ -178,8 +186,12 @@ for (const { num, path: imagePath, label } of pages) {
   }
 }
 
+// Always write structured results so the loop script can read them
+writeFileSync(RESULTS_PATH, JSON.stringify({ passed, failed, failures, pages: results }, null, 2));
+
 console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 console.log(`  Result: ${passed} passed, ${failed} failed out of ${pages.length} chapters`);
+console.log(`  Results saved to: scripts/audit-results.json`);
 
 if (failures.length > 0) {
   console.log("\n  ❌ CHAPTERS THAT FAILED:");

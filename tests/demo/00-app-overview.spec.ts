@@ -30,7 +30,7 @@ test.describe("Demo 00 — App Overview Screenshots", () => {
     await page.waitForSelector("textarea", { state: "visible" });
     // Send a quick question so the AI responds — proves the chat works
     const textarea = page.locator("textarea");
-    await textarea.fill("What feature flags are active?");
+    await textarea.fill("Describe your tools and what experiments you can run.");
     await textarea.press("Enter");
     // Wait for AI to respond (textarea disabled → re-enabled)
     try {

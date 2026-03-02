@@ -239,12 +239,12 @@ figcaption {
      PAGE 1: MEET THE APPS
 ═══════════════════════════════════════ -->
 <div class="page">
-  <div class="eyebrow">The Two Apps You'll See</div>
+  <div class="eyebrow">The App You'll See</div>
   <h1>Meet the Platform</h1>
 
   <p class="lead">
-    The demo runs across two apps that work together. Understanding each one up front will help
-    you follow the live walkthrough without losing the thread.
+    The demo centres on one customer-facing app — <strong>DemoApp2</strong> (a Safeway grocery store) — and one operator workspace called the <strong>Control Room</strong>. Understanding each
+    one up front will help you follow the live walkthrough without losing the thread.
   </p>
 
   <h2>DemoApp2 — The Safeway Grocery Experience</h2>
@@ -256,7 +256,7 @@ figcaption {
     No experiment logic runs in the browser. The page simply renders what the server sends.
   </p>
 
-  ${shot("00-demoapp2-overview.png", "DemoApp2 — the Safeway grocery app. Every section, sort order, and banner is decided server-side based on user attributes.")}
+  ${shot("00-demoapp2-overview.png", "DemoApp2 — the Safeway grocery app (anonymous/default state). The hero banner, 'Shop What\'s Fresh' section with category cards (Meat & Seafood, Produce, Deli, Bakery), and deals grid are all assembled server-side on every request based on user attributes. No personalization is active here.")}
 
   <h2>Control Room — The AI-Powered Interface</h2>
   <p>
@@ -267,7 +267,7 @@ figcaption {
     <strong>Every experiment in the demo is created by typing a sentence here.</strong>
   </p>
 
-  ${shot("00-control-room-overview.png", "Control Room — left panel shows live flags and experiments; right panel is the AI chat. Everything the presenter does happens in this window.")}
+  ${shot("00-control-room-overview.png", "Control Room — the product manager's workspace. Left panel lists all live experiments and feature flags. Right panel: the presenter typed 'Describe your tools and what experiments you can run' — the AI responded listing its capabilities: create/update feature flags, add targeting rules, create A/B experiments, collect results, and roll out winners. Every experiment in the demo is created by typing a sentence here.")}
 
   <div class="callout">
     <p><strong>The connection:</strong> When the product manager types in the Control Room,
@@ -303,15 +303,15 @@ figcaption {
     A/B statistical test and roll out the winner — entirely through conversation.
   </p>
 
-  <h2>Before — Default Layout (No Flags Active)</h2>
+  <h2>Before — DemoApp2 (No Flags Active)</h2>
 
-  ${shot("01a-before-grid-layout.png", "DemoApp1 — default grid layout. Every customer sees the same page.")}
+  ${shot("00-demoapp2-overview.png", "DemoApp2 — default Safeway experience (anonymous, no flags active). The 'Fresh Savings Every Week' hero banner is identical for every visitor; below it the 'Shop What\'s Fresh\' section shows the same four category cards (Meat & Seafood, Produce, Deli, Bakery) to everyone. This is the baseline: zero personalization, zero targeting rules.")}
 
   <h2>One Chat Message Later</h2>
 
-  ${shot("01b-ai-creates-flag.png", "Control Room chat — AI creates the feature flag and confirms the change.")}
+  ${shot("05a-control-room-flag-created.png", "Control Room chat — the product manager typed one sentence asking for a string flag 'demoapp2-hero-layout' with a gold-member targeting rule. The AI confirmed: flag created with default 'carousel', force rule added (membership_tier = gold → 'member-rewards'). The left panel shows the flag is now live. No code written.")}
 
-  ${shot("01c-after-large-image-layout.png", "DemoApp1 — large-image layout. Same URL, different experience. No code deployed.")}
+  ${shot("05b-sarah-gold-hero-banner.png", "DemoApp2 — Sarah Chen (Gold member) now sees 'Your Gold Member Rewards' hero with a gold gradient overlay, 'Gold Member Exclusive' pill, and her rewards summary panel. Same URL as the anonymous baseline above — different experience assembled server-side. No code deployed.")}
 
   <div class="callout green">
     <p><strong>The 60-second proof:</strong> Watch the timestamp from the first chat message to the
@@ -359,9 +359,9 @@ figcaption {
 
   ${shot("05b-sarah-gold-hero-banner.png", "Sarah Chen (Gold) — premium hero with gold gradient overlay and 'Gold Member Exclusive' pill.")}
 
-  ${shot("05c-marcus-silver-carousel.png", "Marcus Johnson (Silver) — standard carousel. Not targeted by the rule.")}
+  ${shot("05c-marcus-silver-carousel.png", "Marcus Johnson (Silver) — sees the default carousel (labelled 'Silver Member Seasonal Picks' by the app's carousel component). The gold targeting rule (membership_tier = gold → 'member-rewards') does NOT apply to Silver tier users; the server falls through to the default 'carousel' value and renders the standard carousel layout. Same URL, different server-side decision.")}
 
-  ${shot("05a-control-room-flag-created.png", "Control Room chat — the AI creates the flag and targeting rule in one message.")}
+  ${shot("05a-control-room-flag-created.png", "Control Room chat — the AI creates the 'demoapp2-hero-layout' string flag (default: carousel) and adds the force targeting rule (membership_tier = gold → 'member-rewards') in one message. Left panel confirms the flag is live. Right panel shows the AI's full confirmation with rule details: condition, resulting value, and effect for all non-gold users.")}
 </div>
 
 <!-- ═══════════════════════════════════════
@@ -375,6 +375,10 @@ figcaption {
     Each experiment is created live, through chat. The presenter types one message;
     the AI calls the API; the app changes immediately.
   </p>
+
+  ${shot("05a-control-room-flag-created.png", "Experiment 1 — Control Room: the presenter typed one sentence. The AI created 'demoapp2-hero-layout' (default: carousel) and added a force rule: membership_tier = gold → 'member-rewards'. Left panel confirms the flag is immediately live.")}
+
+  ${shot("05b-sarah-gold-hero-banner.png", "Experiment 1 — DemoApp2: Sarah Chen (Gold) sees the personalised 'Your Gold Member Rewards' hero with gold gradient overlay, 'Gold Member Exclusive' pill, and rewards summary panel — assembled server-side immediately after the flag was created via chat.")}
 
   <div class="card">
     <div class="card-hd">
@@ -463,16 +467,16 @@ figcaption {
   <h1>Frequent vs. Occasional Shopper</h1>
   <p>Same page, same URL. The server decides the layout based on shopping_behavior.</p>
 
-  ${shot("06b-sarah-frequent-grid.png", "Sarah Chen (frequent) — dense 2-column deals grid. More products visible at a glance.")}
+  ${shot("06b-sarah-frequent-grid.png", "Sarah Chen (frequent shopper) — 'Your Exclusive Deals' displayed as a dense multi-column grid. More products visible at a glance: Chocolate Truffles, Strawberry Yogurt Parfait, Kettle Cooked Chips and more. Server evaluated shopping_behavior = frequent and returned grid layout.")}
 
-  ${shot("06c-marcus-occasional-scroll.png", "Marcus Johnson (occasional) — horizontal scroll strip. Easier to browse without overwhelm.")}
+  ${shot("06c-marcus-occasional-scroll.png", "Marcus Johnson (occasional shopper) — 'Member Deals' displayed as a horizontal scroll carousel. Fewer items shown at once, easier to browse casually. Server evaluated shopping_behavior = occasional and returned scroll layout. Same URL as Sarah — different server-side decision.")}
 
   <h2>Experiment 3 — Family vs. Senior Category Order</h2>
   <p>The server reorders 16 category tiles in real time based on household_type.</p>
 
-  ${shot("07b-sarah-snacks-first.png", "Sarah Chen (family household) — Snacks & Chips boosted to first position.")}
+  ${shot("07b-sarah-snacks-first.png", "Sarah Chen (family household) — the 'Shop by Category' circular grid shows Snacks & Chips in first position, followed by Meat & Seafood, Produce, Breakfast and others. The server reordered all 16 category tiles based on household_type = family. Compare the first category icon to Robert Williams below — same URL, server-side reordering only.")}
 
-  ${shot("07c-robert-meat-first.png", "Robert Williams (senior household) — Meat & Seafood surfaced first.")}
+  ${shot("07c-robert-meat-first.png", "Robert Williams (senior household) — the 'Shop by Category' circular grid shows Meat & Seafood first, then Produce, Organics, Wine & Spirits and others. The family targeting rule does not apply (household_type = senior); the server returns the senior-ordered category grid. First category: Meat & Seafood — versus Snacks & Chips for Sarah above. Same URL, different ordering.")}
 </div>
 
 <!-- ═══════════════════════════════════════
@@ -486,19 +490,19 @@ figcaption {
   <p>Sarah Chen (California) sees weekly deals sorted cheapest first.
   Marcus Johnson (New York) sees popularity order. One flag — regional behavior, no code.</p>
 
-  ${shot("08b-sarah-price-sorted-deals.png", "Sarah Chen (CA) — deals sorted by price, lowest first. Gold title: 'Your Exclusive Deals'.")}
+  ${shot("08b-sarah-price-sorted-deals.png", "Sarah Chen (CA) — 'Your Exclusive Deals' sorted by price, lowest first. Chocolate Truffles ($0.50 off) leads the grid. Marcus Johnson (NY) sees the same deals in popularity order — no code change required.")}
 
   <h2>Experiment 5 — Senior Fresh Section Control</h2>
   <p>A single boolean flag with one targeting rule produces three different outcomes
   for three different segments simultaneously.</p>
 
-  ${shot("09b-robert-no-fresh-section.png", "Robert Williams (senior) — fresh section is hidden. The section is simply absent from his layout.")}
+  ${shot("09b-robert-no-fresh-section.png", "Robert Williams (senior household) — the 'Shop What\'s Fresh' section is entirely absent from his page layout. The server evaluated household_type = senior, applied the targeting rule (demoapp2-fresh-section → false), and omitted the section entirely. No placeholder, no empty space — simply not rendered.")}
 
   ${shot("09c-emily-fresh-welcome.png", "Emily Rodriguez (new shopper) — fresh section visible with a personalised welcome message.")}
 
   ${shot("09d-sarah-fresh-rewards.png", "Sarah Chen (gold/family) — fresh section visible with her rewards panel. No welcome message.")}
 
-  ${shot("09a-ai-creates-flag.png", "Control Room chat — AI creates the fresh section targeting rule in a single message.")}
+  ${shot("09a-ai-creates-flag.png", "Control Room chat — the product manager typed one sentence: create a boolean flag 'demoapp2-fresh-section' (default: true) with a senior targeting rule (household_type = senior → false). The AI confirmed the flag was created and the force rule was added. The left panel shows the flag is live. Seniors see no fresh section; all other segments see it — one message, zero code deployed.")}
 
   <div class="callout">
     <p><strong>What this demonstrates:</strong> One sentence from the product manager.
@@ -540,11 +544,11 @@ figcaption {
     </tbody>
   </table>
 
-  ${shot("10a-experiment-created.png", "Turn 1 — AI creates the A/B experiment with a 50/50 traffic split.")}
+  ${shot("10a-experiment-created.png", "Turn 1 — the presenter typed one sentence asking the AI to create a 'Deals Layout A/B Test' A/B experiment on 'demoapp2-deals-layout': Control = scroll, Variant A = grid, targeting frequent shoppers. Left panel shows the experiment is live. Right panel shows the AI's full confirmation including experiment ID and variation details.")}
 
-  ${shot("10b-statistical-results.png", "Turn 2 — AI returns: +72% relative uplift · 97.8% confidence · p = 0.028 · statistically significant.")}
+  ${shot("10b-statistical-results.png", "Turn 2 — the presenter asked for experiment results. The AI retrieved and summarised: Variant A (grid) vs. Control (scroll) — +33.7% relative uplift in conversion, 97.8% confidence, p = 0.028 (statistically significant at p < 0.05). The AI's recommendation: roll out the grid variant to all frequent shoppers.")}
 
-  ${shot("10c-rollout-applied.png", "Turn 3 — AI applies a force rule to send 100% of frequent shoppers to the winning grid variant.")}
+  ${shot("10c-rollout-applied.png", "Turn 3 — the presenter said 'roll out the winning variant.' The AI added a force rule to 'demoapp2-deals-layout' (shopping_behavior = frequent → grid), replacing the A/B split with 100% grid for all frequent shoppers. Left panel shows the updated rule is live. No code deployed, no engineer involved.")}
 
   ${shot("10d-sarah-grid-after-rollout.png", "Verification — Sarah Chen sees the deals grid after rollout. The winning variant is live for all users.")}
 
@@ -655,7 +659,6 @@ await browser.close();
 
 const needed = [
   "00-demoapp2-overview.png","00-control-room-overview.png",
-  "01a-before-grid-layout.png","01b-ai-creates-flag.png","01c-after-large-image-layout.png",
   "05a-control-room-flag-created.png","05b-sarah-gold-hero-banner.png","05c-marcus-silver-carousel.png",
   "06b-sarah-frequent-grid.png","06c-marcus-occasional-scroll.png",
   "07b-sarah-snacks-first.png","07c-robert-meat-first.png",

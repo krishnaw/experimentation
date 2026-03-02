@@ -58,7 +58,6 @@ test.describe("Demo 6 — Frequent Shopper Deals Grid", () => {
     }
     await dashPage.screenshot({
       path: `${SCREENSHOT_DIR}/06a-control-room-flag-created.png`,
-      fullPage: true,
     });
     console.log("  [Step 1] Screenshot: 06a-control-room-flag-created.png");
 
@@ -134,7 +133,6 @@ test.describe("Demo 6 — Frequent Shopper Deals Grid", () => {
     }
     await confirmPage.screenshot({
       path: `${SCREENSHOT_DIR}/06d-control-room-flag-status.png`,
-      fullPage: true,
     });
     console.log("  [Step 4] Screenshot: 06d-control-room-flag-status.png");
     await confirmPage.close();

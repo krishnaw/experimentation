@@ -11,10 +11,10 @@ export default defineConfig({
   outputDir: "scripts/screenshots/demo/videos",
   use: {
     headless: true,
-    viewport: { width: 1440, height: 900 },
+    viewport: { width: 900, height: 700 },
     screenshot: "on",
     // Record a video for every test. Saved to scripts/screenshots/demo/videos/{test-name}/
-    video: { mode: "on", size: { width: 1440, height: 900 } },
+    video: { mode: "on", size: { width: 900, height: 700 } },
     baseURL: "http://localhost:3050",
     // Disable browser HTTP cache so the GrowthBook SDK always fetches fresh features.
     // GrowthBook's features endpoint sets max-age=30, stale-while-revalidate=3600 which
