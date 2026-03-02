@@ -176,60 +176,6 @@ The chat endpoint tries providers in order (first with a valid key wins):
 3. **Groq** — llama-3.3-70b-versatile, fast, free tier
 4. **Anthropic** — Claude Haiku 4.5, most reliable, paid (rate-limited)
 
-## Adding a New Feature Flag — What Needs to Change
-
-DemoApp1 and DemoApp2 use different flag evaluation architectures, so the work required differs.
-
----
-
-### DemoApp1 (client-side SDK flags)
-
-DemoApp1 reads flags directly in the browser via `useFeatureValue()` from the GrowthBook React SDK.
-
-| Step | File | Required? |
-|------|------|-----------|
-| Create flag in Exp Engine (UI or chat) | — | Yes |
-| Call `useFeatureValue("flag-id", defaultValue)` in the component or page | `apps/web/src/app/page.tsx` or a component | **Yes** |
-| For API-side flags (e.g. sort order): read flag in the API route | `apps/web/src/app/api/products/route.ts` | If server-side |
-| Deploy `apps/web` | Next.js server | **Yes** |
-
-React components in DemoApp1 **do** need code changes — each new flag needs a `useFeatureValue()` call wired to a conditional render.
-
----
-
-### DemoApp2 (Server-Driven UI — SDUI)
-
-DemoApp2 uses a server-side layout API. The server evaluates all flags and returns a complete `PageLayout` object. React components are pure renderers — they accept typed props only and contain no flag logic.
-
-| Step | File | Required? |
-|------|------|-----------|
-| Create flag in Exp Engine (UI or chat) | — | Yes |
-| Evaluate the flag and translate it to props | `apps/web/src/app/api/demoapp2/layout/route.ts` | **Yes** |
-| Add new prop fields if the component needs new data | `apps/web/src/lib/layout-types.ts` | Only if new prop shape |
-| Update the React component to render the new prop | `apps/web/src/components/demoapp2/` | Only if new prop shape |
-| Deploy `apps/web` | Next.js server | **Yes** |
-
-**Zero React component changes** for most experiments — if the relevant prop already exists (e.g. `mode`, `layout`, `title`), only the layout API needs updating. The React component already knows how to render all the variations it accepts.
-
-**Example**: Adding a `demoapp2-deals-sort` flag required:
-1. One code change in `layout/route.ts` (evaluate flag → pass `sortOrder` prop)
-2. No changes to `WeeklyDeals.tsx` — it already accepted a `sortOrder` prop
-
-**Example**: Adding a brand-new UI element (e.g. a loyalty badge that didn't exist before) requires:
-1. Code change in `layout-types.ts` (add prop field)
-2. Code change in the component (render the new prop)
-3. Code change in `layout/route.ts` (evaluate flag → set the prop)
-
----
-
-### FAQ: Can I add a flag without touching code?
-
-**No** — creating the flag in Exp Engine (via chat or UI) sets up the targeting rules, but the app needs to know how to respond to it. The code change is always server-side (the layout API or an API route), never in the React components for DemoApp2. For DemoApp1, the component itself needs a `useFeatureValue()` call.
-
-The AI agent can create and configure flags instantly via chat — but deploying the server code that acts on those flags still requires a code change and redeploy of `apps/web`.
-
----
-
 ## Demo Scenarios
 
 Good prompts for a live demo:

@@ -214,8 +214,16 @@ This is what to explain on the whiteboard or in one slide:
    flag checks run client-side. The browser is a pure
    renderer.
 
-6. Adding a new experiment requires one chat message.
-   Zero code changes. Zero deploys. Zero engineer tickets.
+6. Adding a new experiment that reuses an existing prop
+   (e.g. a new targeting rule for hero layout, deals sort,
+   category order) requires one chat message — zero code
+   changes, zero deploys.
+
+   Adding a brand-new type of experiment (a UI behavior the
+   app has never done before) requires one server-side code
+   change to the Layout API, a redeploy of apps/web, then
+   one chat message to configure the flag. React components
+   never change.
 ```
 
 ---
@@ -252,4 +260,43 @@ Most feature flag tools require an engineer to write the SDK call, deploy the co
 Yes. The Control Room AI can also create proper A/B experiments with traffic splits, assign them to feature flags, and retrieve results with conversion rates, uplift percentages, and confidence intervals. Experiments 1-5 in this demo use force targeting rules (100% of a segment gets the variant) because they are showcasing personalization, not statistical testing.
 
 **Q: How long does it take to add a sixth experiment?**
-Approximately 60 seconds — the time it takes to type a chat message and wait for the AI to confirm. The page update for targeted users is immediate.
+It depends on whether the new experiment reuses a UI behavior the app already supports:
+
+- **Reusing an existing prop** (e.g. a new targeting rule that changes the hero layout, the deals sort order, or the category ordering): approximately 60 seconds — one chat message, no engineering involvement. The page updates for targeted users immediately.
+- **A brand-new UI behavior** (e.g. a section that has never existed before, a new card style, a new CTA pattern): requires a server-side code change to the Layout API (`/api/demoapp2/layout`), a redeploy of the web app, then one chat message to configure the flag. The React components themselves never change — only the server logic that decides what props to pass them.
+
+In practice, the five experiments in this demo all reuse props the components already accept, so any targeting variation of them is genuinely zero-code.
+
+**Q: Do the React components ever need to change?**
+No — for DemoApp2. The components are pure renderers: they accept typed props and render whatever the server sends. All experiment logic (which banner to show, how to sort products, whether to show a section, what copy to display) lives in the Layout API server, not in the browser. Adding a new targeting rule or a new variation of an existing experiment never touches a React component.
+
+The only time a React component needs updating is when a genuinely new UI capability is being introduced that the component has never supported before — for example, adding a loyalty badge widget that doesn't exist yet. Even then, only the new component is written; all existing components stay unchanged.
+
+---
+
+## For Engineers: How to Add a New Flag
+
+### If the new experiment reuses an existing prop (zero-code path)
+
+1. Create the flag in Exp Engine via chat or UI — no code needed.
+2. Add a targeting rule pointing to an existing prop value (e.g. `member-rewards`, `grid`, `price`, `personalized`).
+3. Done. No deployment needed.
+
+### If the new experiment introduces a new UI behavior
+
+| Step | File to change | What to do |
+|------|---------------|------------|
+| 1 | `apps/web/src/app/api/demoapp2/layout/route.ts` | Evaluate the new flag with `gb.getFeatureValue(...)` and translate the result into props |
+| 2 | `apps/web/src/lib/layout-types.ts` | Add the new prop field to the relevant section type (only if the component needs a new prop) |
+| 3 | `apps/web/src/components/demoapp2/<Component>.tsx` | Add rendering logic for the new prop (only if a new prop was added) |
+| 4 | Deploy `apps/web` | Restart the Next.js server |
+| 5 | Create the flag + targeting rule via chat | Done |
+
+**React components never change for steps 1–2 alone.** The layout API is the single source of truth for all experiment decisions. Components are written once and reused across every variation.
+
+### What never needs to change
+
+- `apps/web/src/app/demoapp2/page.tsx` — the DemoApp2 page router
+- `apps/web/src/contexts/UserContext.tsx` — the user/persona context
+- Any component that already accepts the prop you need
+- Any existing test (unless you are adding a new demo scenario)
