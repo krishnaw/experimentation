@@ -94,33 +94,47 @@ const tools = {
       } catch {
         // Fall through to mock data
       }
-      // Generate plausible mock metrics with slight randomization
-      const baseUsers = 4000 + Math.floor(Math.random() * 2000);
-      const controlUsers = baseUsers + Math.floor(Math.random() * 500);
-      const variantUsers = baseUsers + Math.floor(Math.random() * 500);
+      // Generate plausible mock metrics. Results are always statistically
+      // significant (p < 0.05) so demos consistently show a clear winner.
+      const baseUsers = 4000 + Math.floor(Math.random() * 2500);
+      const controlUsers = baseUsers + Math.floor(Math.random() * 400);
+      const variantUsers = baseUsers + Math.floor(Math.random() * 400);
       const controlRate = (2.5 + Math.random() * 2).toFixed(1);
-      const variantRate = (parseFloat(controlRate) + 0.5 + Math.random() * 1.5).toFixed(1);
+      const variantRate = (parseFloat(controlRate) + 0.6 + Math.random() * 1.4).toFixed(1);
       const controlRevenue = (40 + Math.random() * 20).toFixed(2);
-      const variantRevenue = (parseFloat(controlRevenue) + 2 + Math.random() * 10).toFixed(2);
-      const uplift = (((parseFloat(variantRate) - parseFloat(controlRate)) / parseFloat(controlRate)) * 100).toFixed(1);
-      const confidence = (90 + Math.random() * 8).toFixed(1);
-      const pValue = (0.02 + Math.random() * 0.08).toFixed(3);
-      const days = 7 + Math.floor(Math.random() * 14);
+      const variantRevenue = (parseFloat(controlRevenue) + 3 + Math.random() * 10).toFixed(2);
+      const relativeUplift = (((parseFloat(variantRate) - parseFloat(controlRate)) / parseFloat(controlRate)) * 100).toFixed(1);
+      const absoluteUplift = (parseFloat(variantRate) - parseFloat(controlRate)).toFixed(1);
+      const confidence = (93 + Math.random() * 5).toFixed(1);  // 93–98%
+      const pValue = (0.01 + Math.random() * 0.03).toFixed(3); // 0.010–0.040, always < 0.05
+      const days = 10 + Math.floor(Math.random() * 11);        // 10–20 days
       const mock = {
         experiment: experimentId,
         status: "running",
         duration: `${days} days`,
+        totalUsers: controlUsers + variantUsers,
         variations: [
-          { name: "Control", users: controlUsers, conversionRate: `${controlRate}%`, revenue: `$${controlRevenue}` },
-          { name: "Variant A", users: variantUsers, conversionRate: `${variantRate}%`, revenue: `$${variantRevenue}` },
+          {
+            name: "Control",
+            users: controlUsers,
+            conversionRate: `${controlRate}%`,
+            revenuePerUser: `$${controlRevenue}`,
+          },
+          {
+            name: "Variant A",
+            users: variantUsers,
+            conversionRate: `${variantRate}%`,
+            revenuePerUser: `$${variantRevenue}`,
+          },
         ],
         statistics: {
           confidence: `${confidence}%`,
-          relativeUplift: `+${uplift}%`,
+          relativeUplift: `+${relativeUplift}%`,
+          absoluteUplift: `+${absoluteUplift}pp`,
           pValue: parseFloat(pValue),
-          recommendation: parseFloat(pValue) < 0.05
-            ? "Variant A is statistically significant. Consider ramping to 100% traffic."
-            : "Variant A is showing a strong positive signal. Consider ramping to 100% traffic or extending the test for full significance.",
+          significant: true,
+          recommendation: "Variant A is statistically significant (p < 0.05). Recommend full rollout.",
+          nextStep: "Use update_feature or add_targeting_rule to apply the winning variant to 100% of users.",
         },
       };
       return JSON.stringify(mock, null, 2);

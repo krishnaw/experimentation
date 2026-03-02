@@ -41,17 +41,18 @@ Allow 30 seconds after starting for the app to compile on first load.
 The demo tells a single story: a product manager uses a chat interface to run five personalization experiments on a live grocery app. Each experiment takes under two minutes to set up. No engineers are paged. No code is deployed.
 
 ```
-Total time: ~20 minutes
+Total time: ~25 minutes (core) or ~30 minutes (with statistical test)
 
  0:00  Intro — show DemoApp2 (anonymous, default page)
- 1:00  Experiment 1: Gold Member Hero Banner        [3 min]
- 4:00  Experiment 2: Frequent Shopper Deals Grid    [3 min]
- 7:00  Experiment 3: Family Category Boost          [3 min]
-10:00  Experiment 4: Regional Price Sort            [3 min]
-13:00  Experiment 5: Senior Fresh Section           [4 min, 3 personas]
-17:00  Architecture callout (1 slide)
-18:00  Run automated validation (pnpm test:demo)
-20:00  Q&A
+ 1:00  Experiment 1: Gold Member Hero Banner         [3 min]
+ 4:00  Experiment 2: Frequent Shopper Deals Grid     [3 min]
+ 7:00  Experiment 3: Family Category Boost           [3 min]
+10:00  Experiment 4: Regional Price Sort             [3 min]
+13:00  Experiment 5: Senior Fresh Section            [4 min, 3 personas]
+17:00  Demo 10: A/B Statistical Test (optional)      [5 min]
+22:00  Architecture callout (1 slide)
+23:00  Run automated validation (pnpm test:demo)
+25:00  Q&A
 ```
 
 ---
@@ -167,6 +168,37 @@ Add a force targeting rule to serve "false" to users where household_type equals
 
 ---
 
+### Demo 10: A/B Statistical Test — Deals Layout
+
+**What it proves:** The platform can run a real A/B experiment with statistical significance reporting, then let the AI analyze the results and roll out the winner — all via natural language.
+
+**The setup — type this in the Control Room chat:**
+```
+Create an A/B experiment called "Deals Layout A/B Test" on feature flag "demoapp2-deals-layout".
+Use tracking key "deals-layout-ab-test".
+Variation 0 (Control) serves "scroll", Variation 1 (Variant A) serves "grid".
+Target only frequent shoppers.
+```
+
+**Then ask for results (imagine 14 days have passed):**
+```
+Get results for the Deals Layout A/B Test experiment and summarize the statistical significance.
+```
+
+**What to show:**
+1. The AI returns a breakdown: Control (scroll) vs Variant A (grid) — user counts, conversion rates, revenue per user.
+2. The AI reports: uplift %, confidence %, p-value < 0.05, and a clear recommendation: "Variant A is statistically significant. Recommend full rollout."
+3. Ask the AI to act: "The results are significant — roll out the grid layout to all frequent shoppers." The AI adds a force rule and confirms.
+4. Sign in as **Jordan Lee** (Silver/TX/frequent shopper). They see the grid layout — the winning variant is live.
+
+**The wow moment:** Say this to leadership —
+> "The AI didn't just run the experiment. It read the statistics, called the winner, and applied the rollout — all in one conversation. No data scientist needed to interpret the p-value. No engineer needed to flip the flag."
+
+**The new personas — Jordan Lee and Priya Patel:**
+These were added to give the demo a richer frequent-shopper audience. Jordan Lee (Silver/TX) shows that the rollout reaches mid-tier members across markets, not just Gold members on the west coast. Priya Patel (Gold/WA) demonstrates west-coast Gold coverage beyond Sarah Chen's California footprint.
+
+---
+
 ## Running the Automated Validation
 
 The entire demo is covered by 9 automated tests that run against the live servers:
@@ -232,16 +264,20 @@ This is what to explain on the whiteboard or in one slide:
 
 Use this table to quickly recall which persona triggers which experiment variant.
 
-| Persona | Tier | Location | Behavior | Household | Exp 1: Hero | Exp 2: Deals Layout | Exp 3: Categories | Exp 4: Price Sort | Exp 5: Fresh Section |
-|---------|------|----------|----------|-----------|-------------|---------------------|-------------------|-------------------|----------------------|
-| Sarah Chen | Gold | CA | Frequent | Family | Variant (gold overlay) | Variant (grid) | Variant (snacks first) | Variant (price sort) | Default (visible + rewards panel) |
-| Marcus Johnson | Silver | NY | Occasional | Couple | Default (carousel) | Default (scroll) | Default (behavior order) | Default (popularity) | Default (visible, no panels) |
-| Emily Rodriguez | Basic | IL | New | Single | Default (carousel) | Default (scroll) | Default (behavior order) | Default (popularity) | Default (visible + welcome panel) |
-| Robert Williams | Gold | OR | Frequent | Senior | Variant (gold overlay) | Variant (grid) | Default (behavior order) | Default (popularity) | Variant (section hidden) |
+| Persona | Tier | Location | Behavior | Household | Exp 1: Hero | Exp 2: Deals Layout | Exp 3: Categories | Exp 4: Price Sort | Exp 5: Fresh Section | Demo 10: A/B Rollout |
+|---------|------|----------|----------|-----------|-------------|---------------------|-------------------|-------------------|----------------------|----------------------|
+| Sarah Chen | Gold | CA | Frequent | Family | Variant (gold overlay) | Variant (grid) | Variant (snacks first) | Variant (price sort) | Default (visible + rewards panel) | Winner (grid) |
+| Marcus Johnson | Silver | NY | Occasional | Couple | Default (carousel) | Default (scroll) | Default (behavior order) | Default (popularity) | Default (visible, no panels) | Default (scroll) |
+| Emily Rodriguez | Basic | IL | New | Single | Default (carousel) | Default (scroll) | Default (behavior order) | Default (popularity) | Default (visible + welcome panel) | Default (scroll) |
+| Robert Williams | Gold | OR | Frequent | Senior | Variant (gold overlay) | Variant (grid) | Default (behavior order) | Default (popularity) | Variant (section hidden) | Winner (grid) |
+| Jordan Lee | Silver | TX | Frequent | Couple | Default (carousel) | Variant (grid) | Default (behavior order) | Default (popularity) | Default (visible, no panels) | Winner (grid) |
+| Priya Patel | Gold | WA | Frequent | Single | Variant (gold overlay) | Variant (grid) | Default (behavior order) | Default (popularity) | Default (visible, no panels) | Winner (grid) |
 
-**Reading the table:** "Variant" means the persona is targeted by the experiment and sees the non-default experience. "Default" means the targeting rule does not apply and the persona sees the standard experience.
+**Reading the table:** "Variant" means the persona is targeted by the experiment and sees the non-default experience. "Default" means the targeting rule does not apply and the persona sees the standard experience. "Winner (grid)" means they see the winning variant after the Demo 10 A/B rollout.
 
-**Note on Robert Williams:** Robert is Gold tier and a frequent shopper, so he triggers Experiments 1 and 2. But he is not in California and not a family household, so he sees default behavior for Experiments 4 and 3. He is the only senior household, making him the sole target for Experiment 5.
+**Note on Robert Williams:** Robert is Gold tier and a frequent shopper, so he triggers Experiments 1 and 2. But he is not in California and not a family household, so he sees default behavior for Experiments 3 and 4. He is the only senior household, making him the sole target for Experiment 5.
+
+**Note on Jordan Lee and Priya Patel:** Both are frequent shoppers, so they are targeted by Experiment 2 (deals grid) and the Demo 10 A/B rollout. Priya is Gold tier so she also gets the gold hero overlay in Experiment 1. Neither is in a family household or California, so Experiments 3 and 4 do not apply to them.
 
 ---
 

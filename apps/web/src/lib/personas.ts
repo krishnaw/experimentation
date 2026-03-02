@@ -62,6 +62,30 @@ export const personas: Persona[] = [
       household_type: "senior",
     },
   },
+  {
+    id: "jordan-lee",
+    name: "Jordan Lee",
+    avatar: "JL",
+    description: "Silver member, Austin frequent shopper, couple",
+    attributes: {
+      membership_tier: "silver",
+      location: "TX",
+      shopping_behavior: "frequent",
+      household_type: "couple",
+    },
+  },
+  {
+    id: "priya-patel",
+    name: "Priya Patel",
+    avatar: "PP",
+    description: "Gold member, Seattle frequent shopper, single",
+    attributes: {
+      membership_tier: "gold",
+      location: "WA",
+      shopping_behavior: "frequent",
+      household_type: "single",
+    },
+  },
 ];
 
 /** Tier badge colors for UI display */

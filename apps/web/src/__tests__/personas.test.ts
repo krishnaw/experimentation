@@ -7,8 +7,8 @@ import {
 } from "@/data/safeway-banners";
 
 describe("personas", () => {
-  it("has exactly 4 entries", () => {
-    expect(personas).toHaveLength(4);
+  it("has exactly 6 entries", () => {
+    expect(personas).toHaveLength(6);
   });
 
   it("every persona has required fields", () => {
