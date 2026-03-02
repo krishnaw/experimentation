@@ -79,10 +79,18 @@ function makeRequest(messages = [{ role: "user", content: "List all features" }]
   });
 }
 
-function makeStreamResult() {
-  const headers = new Headers();
-  const response = new Response("streamed content", { headers });
-  return { toTextStreamResponse: () => response };
+// Successful stream: yields one or more text chunks with no error.
+function makeStreamResult(chunks: string[] = ["test response"]) {
+  async function* gen() { for (const c of chunks) yield c; }
+  return { textStream: gen() };
+}
+
+// Async error stream: throws before yielding any chunk (simulates 429 mid-stream
+// that arrives before the first text delta — i.e. the stream errors immediately).
+function makeErrorStreamResult(error = new Error("429 Too Many Requests")) {
+  // eslint-disable-next-line require-yield
+  async function* gen(): AsyncGenerator<string> { throw error; }
+  return { textStream: gen() };
 }
 
 function fakeChain(keys: string[]) {
@@ -186,7 +194,11 @@ describe("POST /api/chat — fallback chain", () => {
     );
     markRateLimited("cerebras/gpt-oss-120b");
     markRateLimited("mistral/mistral-small-latest");
-    mockStreamText.mockReturnValue(makeStreamResult());
+    // Anthropic path uses toTextStreamResponse (not textStream probe)
+    mockStreamText.mockReturnValue({
+      textStream: makeStreamResult().textStream,
+      toTextStreamResponse: () => new Response("OK", { headers: new Headers() }),
+    });
 
     const { POST } = await import("@/app/api/chat/route");
     const res = await POST(makeRequest());
@@ -201,9 +213,53 @@ describe("POST /api/chat — fallback chain", () => {
     mockBuildFallbackChain.mockReturnValue(
       fakeChain(["cerebras/gpt-oss-120b"])
     );
+    // First call (cerebras): sync throw. Second call (Anthropic): uses toTextStreamResponse.
     mockStreamText
       .mockImplementationOnce(() => { throw new Error("429 Too Many Requests"); })
+      .mockReturnValueOnce({
+        textStream: makeStreamResult().textStream,
+        toTextStreamResponse: () => new Response("OK", { headers: new Headers() }),
+      });
+
+    const { POST } = await import("@/app/api/chat/route");
+    const res = await POST(makeRequest());
+
+    expect(res.headers.get("X-Model")).toBe("anthropic/claude-haiku-4-5");
+  });
+
+  // ── 2b. Async stream error → mark rate-limited + fall through ─────────────
+  // This is the NEW path: 429 arrives as an async error on the textStream
+  // iterator (after streamText() returns) rather than as a sync throw.
+
+  it("catches an async stream error, marks provider rate-limited, and falls through to next", async () => {
+    mockBuildFallbackChain.mockReturnValue(
+      fakeChain(["cerebras/gpt-oss-120b", "mistral/mistral-small-latest"])
+    );
+    mockStreamText
+      .mockReturnValueOnce(makeErrorStreamResult(new Error("429 Too Many Requests")))
       .mockReturnValueOnce(makeStreamResult());
+
+    const { POST } = await import("@/app/api/chat/route");
+    const res = await POST(makeRequest());
+
+    expect(res.headers.get("X-Model")).toBe("mistral/mistral-small-latest");
+    expect(mockStreamText).toHaveBeenCalledTimes(2);
+    const { isRateLimited } = await import("@/lib/llm-fallback");
+    expect(isRateLimited("cerebras/gpt-oss-120b")).toBe(true);
+  });
+
+  it("catches async stream errors for entire chain and falls through to Anthropic", async () => {
+    process.env.ANTHROPIC_API_KEY = "test-anthropic-key";
+    mockBuildFallbackChain.mockReturnValue(
+      fakeChain(["cerebras/gpt-oss-120b", "mistral/mistral-small-latest"])
+    );
+    mockStreamText
+      .mockReturnValueOnce(makeErrorStreamResult())
+      .mockReturnValueOnce(makeErrorStreamResult())
+      .mockReturnValueOnce({
+        textStream: makeStreamResult().textStream,
+        toTextStreamResponse: () => new Response("OK", { headers: new Headers() }),
+      });
 
     const { POST } = await import("@/app/api/chat/route");
     const res = await POST(makeRequest());

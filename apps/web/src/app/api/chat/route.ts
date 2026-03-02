@@ -363,11 +363,18 @@ const tools = {
 };
 
 // ── Stream helper: attempt a provider, skip if rate-limited ───────────────────
-function tryProvider(
+//
+// Async so we can probe the first text chunk before committing the Response.
+// A real HTTP 429/503 from the provider surfaces as an error on the textStream
+// async iterator — catching it here lets us fall through to the next provider.
+// Errors that arrive after the first chunk (mid-stream) cannot be recovered;
+// the stream closes with an error and the next request retries another provider
+// (it will be marked rate-limited by then).
+async function tryProvider(
   entry: ChainEntry,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messages: any,
-): Response | null {
+): Promise<Response | null> {
   if (isRateLimited(entry.key)) {
     console.log(`[chat] Skipping rate-limited: ${entry.key}`);
     return null;
@@ -382,10 +389,46 @@ function tryProvider(
       stopWhen: stepCountIs(5),
     });
 
-    const streamResponse = result.toTextStreamResponse();
-    streamResponse.headers.set("X-Model", entry.name);
+    // Pipe textStream through a TransformStream so we can peek at the first
+    // chunk while still delivering all chunks to the client.
+    const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
+    const writer = writable.getWriter();
+    const encoder = new TextEncoder();
+
+    // firstChunk resolves true when ≥1 chunk arrives, false on pre-chunk error.
+    let probeResolved = false;
+    let firstChunkResolve!: (ok: boolean) => void;
+    const firstChunk = new Promise<boolean>((r) => { firstChunkResolve = r; });
+
+    // Background pipe — runs after we return the Response.
+    void (async () => {
+      try {
+        for await (const text of result.textStream) {
+          if (!probeResolved) { probeResolved = true; firstChunkResolve(true); }
+          await writer.write(encoder.encode(text));
+        }
+        if (!probeResolved) { probeResolved = true; firstChunkResolve(true); } // empty stream, no error
+        await writer.close();
+      } catch (err) {
+        if (!probeResolved) { probeResolved = true; firstChunkResolve(false); }
+        writer.abort(err as Error).catch(() => {});
+      }
+    })();
+
+    const ok = await firstChunk;
+    if (!ok) {
+      console.warn(`[chat] Provider ${entry.key} failed (async stream error)`);
+      markRateLimited(entry.key);
+      return null;
+    }
+
     console.log(`[chat] Using provider: ${entry.name}`);
-    return streamResponse;
+    return new Response(readable, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "X-Model": entry.name,
+      },
+    });
   } catch (err) {
     console.warn(`[chat] Provider ${entry.key} failed:`, (err as Error).message?.substring(0, 200));
     markRateLimited(entry.key);
@@ -400,7 +443,7 @@ export async function POST(req: NextRequest) {
 
   // 1. Try free providers in order (Cerebras → Mistral → Groq)
   for (const entry of chain) {
-    const res = tryProvider(entry, messages);
+    const res = await tryProvider(entry, messages);
     if (!res) continue;
     return res;
   }
