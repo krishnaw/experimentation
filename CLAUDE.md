@@ -13,7 +13,7 @@
 ## Commands
 
 ```bash
-pnpm test              # all unit tests (Vitest, no servers) — 150 tests (149 pass + 1 skipped)
+pnpm test              # all unit tests (Vitest, no servers) — 161 tests (160 pass + 1 skipped)
 pnpm test:integration  # integration tests (Playwright + Vitest, mocked externals)
 pnpm test:e2e          # E2E tests (needs :3050 + :3100, no LLM keys) — 4 tests
 pnpm test:demo         # demo scenario tests (needs :3050 + :3100 + LLM keys)
