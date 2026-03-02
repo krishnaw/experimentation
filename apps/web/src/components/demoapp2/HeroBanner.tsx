@@ -1,36 +1,24 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { heroBanners, getBannersForTier } from "@/data/safeway-banners";
-import { useUser } from "@/contexts/UserContext";
+import type { HeroBannerSectionProps } from "@/lib/layout-types";
 
-interface HeroBannerProps {
-  mode: "carousel" | "single" | "member-rewards";
-}
-
-export default function HeroBanner({ mode }: HeroBannerProps) {
-  const { persona, isSignedIn, remoteFeatures } = useUser();
+export default function HeroBanner({
+  banners,
+  mode,
+  overlayStyle,
+  pillText,
+}: HeroBannerSectionProps) {
   const [current, setCurrent] = useState(0);
   const [clickedBanners, setClickedBanners] = useState<Set<string>>(new Set());
   const [transitioning, setTransitioning] = useState(false);
 
-  // Determine which banners to show based on persona tier
-  const tier = persona?.attributes.membership_tier;
-  const segmentBanners = getBannersForTier(tier);
-
-  // Use remote-evaluated hero layout if signed in, otherwise use prop
-  const effectiveMode = isSignedIn && remoteFeatures["demoapp2-hero-layout"]
-    ? remoteFeatures["demoapp2-hero-layout"] as string
-    : mode;
-
-  const banners = effectiveMode === "single"
-    ? [segmentBanners[0]]
-    : segmentBanners;
+  const displayBanners = mode === "single" ? [banners[0]] : banners;
 
   // Reset carousel position when banners change
   useEffect(() => {
     setCurrent(0);
-  }, [tier]);
+  }, [banners]);
 
   const goTo = useCallback(
     (index: number) => {
@@ -45,36 +33,26 @@ export default function HeroBanner({ mode }: HeroBannerProps) {
   );
 
   const next = useCallback(() => {
-    goTo((current + 1) % banners.length);
-  }, [current, banners.length, goTo]);
+    goTo((current + 1) % displayBanners.length);
+  }, [current, displayBanners.length, goTo]);
 
   const prev = useCallback(() => {
-    goTo((current - 1 + banners.length) % banners.length);
-  }, [current, banners.length, goTo]);
+    goTo((current - 1 + displayBanners.length) % displayBanners.length);
+  }, [current, displayBanners.length, goTo]);
 
   useEffect(() => {
-    if (banners.length <= 1) return;
+    if (displayBanners.length <= 1) return;
     const timer = setInterval(next, 5000);
     return () => clearInterval(timer);
-  }, [banners.length, next]);
+  }, [displayBanners.length, next]);
 
-  const banner = banners[current] || banners[0];
+  const banner = displayBanners[current] || displayBanners[0];
   if (!banner) return null;
 
-  // Gold tier gets a special golden gradient overlay
-  const isGold = tier === "gold";
+  const isGold = overlayStyle === "gold";
   const overlayClass = isGold
     ? "bg-gradient-to-r from-amber-900/80 via-amber-900/40 to-amber-900/10"
     : "bg-gradient-to-r from-black/75 via-black/35 to-black/10";
-
-  // Pill tag text changes by segment
-  const pillText = isSignedIn
-    ? tier === "gold"
-      ? "Gold Member Exclusive"
-      : tier === "silver"
-      ? "Member Picks"
-      : "Welcome"
-    : "This week\u2019s highlight";
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -133,7 +111,7 @@ export default function HeroBanner({ mode }: HeroBannerProps) {
           </div>
 
           {/* Arrows */}
-          {banners.length > 1 && (
+          {displayBanners.length > 1 && (
             <>
               <button
                 onClick={prev}
@@ -177,9 +155,9 @@ export default function HeroBanner({ mode }: HeroBannerProps) {
           )}
 
           {/* Progress dots — bottom right */}
-          {banners.length > 1 && (
+          {displayBanners.length > 1 && (
             <div className="absolute bottom-4 right-6 flex items-center gap-2">
-              {banners.map((_, i) => (
+              {displayBanners.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => goTo(i)}

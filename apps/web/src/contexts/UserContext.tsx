@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
 import type { Persona, UserAttributes } from "@/lib/personas";
+import type { PageLayout } from "@/lib/layout-types";
 import { growthbook } from "@/lib/growthbook";
 
 interface EvaluatedFeatures {
@@ -17,6 +18,10 @@ interface UserContextValue {
   remoteFeatures: EvaluatedFeatures;
   /** True while remote eval is in-flight */
   loadingRemote: boolean;
+  /** Server-driven page layout */
+  layout: PageLayout | null;
+  /** True while layout is being fetched */
+  loadingLayout: boolean;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
@@ -31,6 +36,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [persona, setPersona] = useState<Persona | null>(null);
   const [remoteFeatures, setRemoteFeatures] = useState<EvaluatedFeatures>({});
   const [loadingRemote, setLoadingRemote] = useState(false);
+  const [layout, setLayout] = useState<PageLayout | null>(null);
+  const [loadingLayout, setLoadingLayout] = useState(true);
 
   const fetchRemoteEval = useCallback(async (attributes: UserAttributes, userId: string) => {
     setLoadingRemote(true);
@@ -52,6 +59,33 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const fetchLayout = useCallback(async (attributes?: UserAttributes, userId?: string) => {
+    setLoadingLayout(true);
+    try {
+      const body: Record<string, unknown> = {};
+      if (userId) body.userId = userId;
+      if (attributes) body.attributes = attributes;
+      const res = await fetch("/api/demoapp2/layout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLayout(data);
+      }
+    } catch (err) {
+      console.warn("Layout fetch failed:", err);
+    } finally {
+      setLoadingLayout(false);
+    }
+  }, []);
+
+  // Fetch default layout on mount (no attributes = anonymous)
+  useEffect(() => {
+    fetchLayout();
+  }, [fetchLayout]);
+
   const signIn = useCallback((p: Persona) => {
     setPersona(p);
     // Set attributes on the client-side SDK too (for features not covered by remote eval)
@@ -59,29 +93,35 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       id: p.id,
       ...p.attributes,
     });
-    // Fetch server-side evaluated features
+    // Fetch server-side evaluated features and layout
     fetchRemoteEval(p.attributes, p.id);
-  }, [fetchRemoteEval]);
+    fetchLayout(p.attributes, p.id);
+  }, [fetchRemoteEval, fetchLayout]);
 
   const signOut = useCallback(() => {
     setPersona(null);
     setRemoteFeatures({});
     // Reset SDK attributes to anonymous
     growthbook.setAttributes({});
-  }, []);
+    // Re-fetch default layout
+    fetchLayout();
+  }, [fetchLayout]);
 
-  // Re-fetch remote features when growthbook features update (e.g., after a flag change)
+  // Re-fetch when growthbook features update (e.g., after a flag change)
   useEffect(() => {
-    if (!persona) return;
     const handler = () => {
-      fetchRemoteEval(persona.attributes, persona.id);
+      if (persona) {
+        fetchRemoteEval(persona.attributes, persona.id);
+        fetchLayout(persona.attributes, persona.id);
+      } else {
+        fetchLayout();
+      }
     };
-    // GrowthBook fires "featuresUpdated" when features change
     growthbook.setRenderer(handler);
     return () => {
       growthbook.setRenderer(() => {});
     };
-  }, [persona, fetchRemoteEval]);
+  }, [persona, fetchRemoteEval, fetchLayout]);
 
   return (
     <UserContext.Provider
@@ -92,6 +132,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         signOut,
         remoteFeatures,
         loadingRemote,
+        layout,
+        loadingLayout,
       }}
     >
       {children}

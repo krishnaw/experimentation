@@ -1,65 +1,13 @@
 "use client";
 
-import { useRef, useMemo } from "react";
-import { groceryCategories } from "@/data/safeway-categories";
-import { useUser } from "@/contexts/UserContext";
+import { useRef } from "react";
+import type { CategoryGridSectionProps } from "@/lib/layout-types";
 
-/** Persona-specific category orderings — prioritizes relevant categories */
-const categoryOrderByBehavior: Record<string, string[]> = {
-  // Frequent shoppers: premium, fresh items first
-  frequent: ["meat", "produce", "organic", "wine", "deli", "bakery", "dairy", "frozen", "beverages", "snacks", "pantry", "breakfast", "health", "household", "baby", "pet"],
-  // Occasional shoppers: pantry staples, easy meals
-  occasional: ["pantry", "frozen", "beverages", "snacks", "dairy", "bakery", "produce", "meat", "deli", "breakfast", "household", "health", "organic", "baby", "pet", "wine"],
-  // New shoppers: discovery-oriented, popular first
-  new: ["produce", "snacks", "beverages", "bakery", "dairy", "frozen", "breakfast", "pantry", "meat", "deli", "organic", "health", "household", "baby", "pet", "wine"],
-};
-
-/** Household-type refinements */
-const categoryBoostByHousehold: Record<string, string[]> = {
-  family: ["baby", "snacks", "breakfast"],
-  senior: ["health", "organic", "produce"],
-  single: ["frozen", "snacks", "beverages"],
-  couple: ["wine", "organic", "deli"],
-};
-
-export default function CategoryGrid() {
+export default function CategoryGrid({
+  categories,
+  subtitle,
+}: CategoryGridSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { persona, isSignedIn, remoteFeatures } = useUser();
-
-  const orderedCategories = useMemo(() => {
-    // Check if there's a remote feature override for category order
-    const remoteOrder = remoteFeatures["demoapp2-category-order"] as string | undefined;
-    if (remoteOrder === "personalized" && persona) {
-      const behavior = persona.attributes.shopping_behavior;
-      const household = persona.attributes.household_type;
-      const baseOrder = categoryOrderByBehavior[behavior] || [];
-      const boosts = categoryBoostByHousehold[household] || [];
-
-      return [...groceryCategories].sort((a, b) => {
-        // Boosted categories get priority
-        const aBoost = boosts.includes(a.id) ? -10 : 0;
-        const bBoost = boosts.includes(b.id) ? -10 : 0;
-        const aIdx = baseOrder.indexOf(a.id);
-        const bIdx = baseOrder.indexOf(b.id);
-        return (aIdx + aBoost) - (bIdx + bBoost);
-      });
-    }
-
-    // If signed in but no specific override, use behavior-based ordering
-    if (isSignedIn && persona) {
-      const behavior = persona.attributes.shopping_behavior;
-      const order = categoryOrderByBehavior[behavior];
-      if (order) {
-        return [...groceryCategories].sort((a, b) => {
-          const aIdx = order.indexOf(a.id);
-          const bIdx = order.indexOf(b.id);
-          return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
-        });
-      }
-    }
-
-    return groceryCategories;
-  }, [persona, isSignedIn, remoteFeatures]);
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -71,8 +19,8 @@ export default function CategoryGrid() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Shop by Category</h2>
-          {isSignedIn && (
-            <p className="text-[11px] text-gray-400 mt-0.5">Personalized for you</p>
+          {subtitle && (
+            <p className="text-[11px] text-gray-400 mt-0.5">{subtitle}</p>
           )}
         </div>
         <div className="flex gap-1.5">
@@ -106,7 +54,7 @@ export default function CategoryGrid() {
           className="flex gap-4 overflow-x-auto pb-3 px-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {orderedCategories.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat.id}
               className="flex-none flex flex-col items-center gap-2.5 w-[82px] py-2 cursor-pointer group"

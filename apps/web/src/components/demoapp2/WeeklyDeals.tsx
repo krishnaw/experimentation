@@ -2,11 +2,7 @@
 
 import { useRef, useState } from "react";
 import type { GroceryProduct } from "@/data/safeway-products";
-import { useUser } from "@/contexts/UserContext";
-
-interface WeeklyDealsProps {
-  products: GroceryProduct[];
-}
+import type { WeeklyDealsSectionProps } from "@/lib/layout-types";
 
 function BadgeChip({ badge }: { badge: "Sale" | "New" | "BOGO" | "Hot" }) {
   const styles: Record<string, string> = {
@@ -43,10 +39,16 @@ function MemberPriceBadge({ tier }: { tier: string }) {
   return null;
 }
 
-export default function WeeklyDeals({ products }: WeeklyDealsProps) {
+export default function WeeklyDeals({
+  products,
+  layout,
+  title,
+  subtitle,
+  showUpsell,
+  memberTier,
+}: WeeklyDealsSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [clipped, setClipped] = useState<Set<string>>(new Set());
-  const { persona, isSignedIn, remoteFeatures } = useUser();
 
   const handleClip = (id: string) => {
     setClipped((prev) => new Set(prev).add(id));
@@ -57,22 +59,6 @@ export default function WeeklyDeals({ products }: WeeklyDealsProps) {
     const amount = direction === "left" ? -640 : 640;
     scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
   };
-
-  // Check for grid layout via remote features or default to scroll
-  const layout = (remoteFeatures["demoapp2-deals-layout"] as string) || "scroll";
-  const tier = persona?.attributes.membership_tier;
-
-  const sectionTitle = isSignedIn && tier === "gold"
-    ? "Your Exclusive Deals"
-    : isSignedIn && tier === "silver"
-    ? "Member Deals"
-    : "Weekly Deals";
-
-  const sectionSubtitle = isSignedIn && tier === "gold"
-    ? `${products.length} Gold-member deals \u00b7 Extra savings unlocked`
-    : isSignedIn
-    ? `${products.length} member deals this week`
-    : `${products.length} deals this week \u00b7 Updated every Wednesday`;
 
   // Render product card (shared between grid and scroll layout)
   const renderCard = (product: GroceryProduct) => {
@@ -111,7 +97,7 @@ export default function WeeklyDeals({ products }: WeeklyDealsProps) {
             <span className="text-lg font-extrabold text-gray-900 tracking-tight">
               {product.offerPrice}
             </span>
-            {isSignedIn && tier && <MemberPriceBadge tier={tier} />}
+            {memberTier && <MemberPriceBadge tier={memberTier} />}
           </div>
 
           {/* CTA */}
@@ -135,8 +121,8 @@ export default function WeeklyDeals({ products }: WeeklyDealsProps) {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{sectionTitle}</h2>
-          <p className="text-sm text-gray-400 mt-1">{sectionSubtitle}</p>
+          <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+          <p className="text-sm text-gray-400 mt-1">{subtitle}</p>
         </div>
         {layout === "scroll" && (
           <div className="flex gap-1.5">
@@ -184,7 +170,7 @@ export default function WeeklyDeals({ products }: WeeklyDealsProps) {
       )}
 
       {/* Non-signed-in upsell */}
-      {!isSignedIn && (
+      {showUpsell && (
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-400">
             Sign in for member pricing and exclusive deals

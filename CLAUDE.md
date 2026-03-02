@@ -13,7 +13,7 @@
 ## Commands
 
 ```bash
-pnpm test              # all unit tests (Vitest, no servers) — 110 tests (109 pass + 1 skipped)
+pnpm test              # all unit tests (Vitest, no servers) — 150 tests (149 pass + 1 skipped)
 pnpm test:integration  # integration tests (Playwright + Vitest, mocked externals)
 pnpm test:e2e          # E2E tests (needs :3050 + :3100, no LLM keys) — 4 tests
 pnpm test:demo         # demo scenario tests (needs :3050 + :3100 + LLM keys)
@@ -49,6 +49,8 @@ Control Room lives in `apps/web` at the `/dashboard` route. Split-panel layout: 
 - `src/app/api/experiments/route.ts` — proxy for Exp Engine experiments list
 - `src/app/api/features/route.ts` — proxy for Exp Engine features list
 - `src/app/api/demoapp2/evaluate/route.ts` — server-side feature evaluation (remote eval)
+- `src/app/api/demoapp2/layout/route.ts` — SDUI layout API (assembles full page layout server-side)
+- `src/lib/layout-types.ts` — shared TypeScript types for SDUI layout sections and props
 - `src/lib/growthbook-api.ts` — Exp Engine REST client (targeting rules, saved groups, experiment rules)
 - `src/app/dashboard/page.tsx` — Control Room (split-panel: context + chat)
 
