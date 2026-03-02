@@ -4,7 +4,7 @@ import {
   heroBanners,
   segmentBanners,
   getBannersForTier,
-} from "@/data/safeway-banners";
+} from "@/data/grocery-shop-banners";
 
 describe("personas", () => {
   it("has exactly 6 entries", () => {

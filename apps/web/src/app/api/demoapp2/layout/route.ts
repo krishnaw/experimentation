@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GrowthBook } from "@growthbook/growthbook";
-import { getBannersForTier } from "@/data/safeway-banners";
-import { groceryCategories } from "@/data/safeway-categories";
-import { groceryProducts } from "@/data/safeway-products";
+import { getBannersForTier } from "@/data/grocery-shop-banners";
+import { groceryCategories } from "@/data/grocery-shop-categories";
+import { groceryProducts } from "@/data/grocery-shop-products";
 import type { PageLayout, FreshCategory } from "@/lib/layout-types";
 
 const GB_API_HOST =
@@ -159,7 +159,7 @@ export async function POST(req: NextRequest) {
         : null,
       welcomeMessage: isSignedIn && behavior === "new"
         ? {
-            title: "Welcome to Safeway!",
+            title: "Welcome to Grocery Shop!",
             body: "Start exploring our fresh departments below. Clip deals to save on your first order.",
           }
         : null,

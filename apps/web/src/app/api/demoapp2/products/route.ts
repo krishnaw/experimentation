@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { groceryProducts } from "@/data/safeway-products";
+import { groceryProducts } from "@/data/grocery-shop-products";
 
 const GB_API_HOST = process.env.GROWTHBOOK_API_HOST || process.env.NEXT_PUBLIC_GROWTHBOOK_API_HOST || "http://localhost:3100";
 const GB_CLIENT_KEY = process.env.GROWTHBOOK_CLIENT_KEY || process.env.NEXT_PUBLIC_GROWTHBOOK_CLIENT_KEY || "";

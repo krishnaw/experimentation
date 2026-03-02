@@ -4,14 +4,14 @@ AI-native A/B testing demo. Chat with an AI agent to create experiments, flip fe
 
 Built on two demo apps where feature flags and experiments control product layouts, sort order, and UI sections live:
 - **DemoApp1** — Electronics e-commerce store (tech products, grid layouts)
-- **DemoApp2** — Safeway-style grocery homepage (hero carousel, category grid, 19 weekly deals, collapsible footer)
+- **DemoApp2** — Grocery Shop homepage (hero carousel, category grid, 19 weekly deals, collapsible footer)
 
 ## Architecture
 
 ```
 Single Next.js App (:3050)
   ├── /             — DemoApp1 e-commerce store (Exp Engine SDK, client-side flags)
-  ├── /demoapp2     — DemoApp2 Safeway grocery replica (Exp Engine SDK, client-side flags)
+  ├── /demoapp2     — DemoApp2 Grocery Shop replica (Exp Engine SDK, client-side flags)
   ├── /dashboard    — Control Room (split-panel: context + chat)
   │   └── /api/chat ─── Vercel AI SDK ─── Cerebras / Mistral / Groq / Anthropic
   │         └── Exp Engine REST API (:3100)
@@ -108,7 +108,7 @@ pnpm dev:web   # http://localhost:3050
 
 Visit:
 - http://localhost:3050 — DemoApp1 (electronics store) with live feature flags
-- http://localhost:3050/demoapp2 — DemoApp2 (Safeway grocery) with live feature flags
+- http://localhost:3050/demoapp2 — DemoApp2 (Grocery Shop) with live feature flags
 - http://localhost:3050/dashboard — Control Room (chat)
 - http://localhost:3050/growthbook — Exp Engine UI (embedded)
 
@@ -150,7 +150,7 @@ experimentation/
 │           │   ├── Sidebar.tsx         # Left nav (Control Room / DemoApp1 / DemoApp2 / Exp Engine)
 │           │   ├── ProductCard.tsx
 │           │   ├── GrowthBookProvider.tsx
-│           │   └── demoapp2/           # DemoApp2 components (SafewayHeader, HeroBanner, etc.)
+│           │   └── demoapp2/           # DemoApp2 components (GroceryShopHeader, HeroBanner, etc.)
 │           └── lib/
 │               ├── growthbook.ts       # Exp Engine React SDK singleton
 │               ├── growthbook-api.ts   # Exp Engine REST client

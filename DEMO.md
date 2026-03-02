@@ -14,7 +14,7 @@ This platform lets any team member — no engineering required — walk into a c
 |-------------|-------|---------------|
 | Exp Engine (GrowthBook) Docker | Running on ports 3000 and 3100 | Open http://localhost:3000 — you should see the GrowthBook UI |
 | Web app (Next.js) | Running on port 3050 | Open http://localhost:3050 — DemoApp1 product grid loads |
-| DemoApp2 | Same app, /demoapp2 route | Open http://localhost:3050/demoapp2 — Safeway grocery store loads |
+| DemoApp2 | Same app, /demoapp2 route | Open http://localhost:3050/demoapp2 — Grocery Shop loads |
 | Control Room | Same app, /dashboard route | Open http://localhost:3050/dashboard — split-panel chat UI loads |
 | LLM API keys | Set in apps/web/.env.local | Control Room chat responds when you type a message |
 
@@ -163,7 +163,7 @@ Add a force targeting rule to serve "false" to users where household_type equals
 **What to show (3 personas):**
 
 1. Sign in as **Robert Williams** (senior). The "Shop What's Fresh" section is completely gone — not hidden, not greyed out, not in the DOM at all. The page goes straight from the hero banner to category navigation and deals.
-2. Sign out, sign in as **Emily Rodriguez** (new member). The fresh section is visible. Inside it, a blue panel says "Welcome to Safeway!" with onboarding copy — because the layout API detects she is a new shopper.
+2. Sign out, sign in as **Emily Rodriguez** (new member). The fresh section is visible. Inside it, a blue panel says "Welcome to Grocery Shop!" with onboarding copy — because the layout API detects she is a new shopper.
 3. Sign out, sign in as **Sarah Chen** (Gold, family). The fresh section is visible. Inside it, a gold panel shows "Your Rewards" with her points balance, savings, and clipped deals count — because she is a Gold member.
 
 **The wow moment:** Say this to leadership —

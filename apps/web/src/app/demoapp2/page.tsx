@@ -1,12 +1,12 @@
 "use client";
 
 import { useUser } from "@/contexts/UserContext";
-import SafewayHeader from "@/components/demoapp2/SafewayHeader";
+import GroceryShopHeader from "@/components/demoapp2/GroceryShopHeader";
 import HeroBanner from "@/components/demoapp2/HeroBanner";
 import FreshSection from "@/components/demoapp2/FreshSection";
 import CategoryGrid from "@/components/demoapp2/CategoryGrid";
 import WeeklyDeals from "@/components/demoapp2/WeeklyDeals";
-import SafewayFooter from "@/components/demoapp2/SafewayFooter";
+import GroceryShopFooter from "@/components/demoapp2/GroceryShopFooter";
 import type { LayoutSection } from "@/lib/layout-types";
 
 function renderSection(section: LayoutSection) {
@@ -68,13 +68,13 @@ export default function DemoApp2Page() {
 
   return (
     <div className="min-h-screen bg-white">
-      <SafewayHeader />
+      <GroceryShopHeader />
       {loadingLayout || !layout ? (
         <LoadingSkeleton />
       ) : (
         layout.sections.map(renderSection)
       )}
-      <SafewayFooter />
+      <GroceryShopFooter />
     </div>
   );
 }

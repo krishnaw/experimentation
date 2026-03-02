@@ -93,7 +93,7 @@ export const segmentBanners: Record<string, HeroBanner[]> = {
   basic: [
     {
       id: "banner-basic-welcome",
-      title: "Welcome to Safeway Club!",
+      title: "Welcome to Grocery Shop Club!",
       subtitle: "Start saving today \u2014 members get exclusive deals every week",
       ctaText: "Explore Deals",
       ctaClickedText: "Welcome aboard! \ud83c\udf89",

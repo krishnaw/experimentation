@@ -1,6 +1,6 @@
-import type { HeroBanner } from "@/data/safeway-banners";
-import type { GroceryCategory } from "@/data/safeway-categories";
-import type { GroceryProduct } from "@/data/safeway-products";
+import type { HeroBanner } from "@/data/grocery-shop-banners";
+import type { GroceryCategory } from "@/data/grocery-shop-categories";
+import type { GroceryProduct } from "@/data/grocery-shop-products";
 
 export interface HeroBannerSectionProps {
   banners: HeroBanner[];

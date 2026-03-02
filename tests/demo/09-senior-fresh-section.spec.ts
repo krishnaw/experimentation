@@ -10,7 +10,7 @@
  *
  * Personas validated:
  *   Robert Williams (senior)        → "Shop What's Fresh" section NOT in DOM
- *   Emily Rodriguez (new/single)    → Fresh section visible + "Welcome to Safeway!" message
+ *   Emily Rodriguez (new/single)    → Fresh section visible + "Welcome to Grocery Shop!" message
  *   Sarah Chen      (family/gold)   → Fresh section visible + "Your Rewards" panel, no welcome
  *
  * Steps:
@@ -161,9 +161,9 @@ test.describe("Demo 9: Senior Household — Hidden Fresh Section", () => {
       console.log("  [Step 3] PASS: Fresh section ('Shop What's Fresh') visible for Emily (new).");
 
       // Welcome message — rendered by FreshSection when welcomeMessage prop is set (shopping_behavior=new)
-      const welcomeHeading = page.locator("h3.font-bold.text-blue-900", { hasText: "Welcome to Safeway!" });
+      const welcomeHeading = page.locator("h3.font-bold.text-blue-900", { hasText: "Welcome to Grocery Shop!" });
       await expect(welcomeHeading).toBeVisible({ timeout: 10000 });
-      console.log("  [Step 3] PASS: 'Welcome to Safeway!' message visible for Emily (new member).");
+      console.log("  [Step 3] PASS: 'Welcome to Grocery Shop!' message visible for Emily (new member).");
 
       // Scroll welcome message into view so it's clearly visible in the screenshot
       await welcomeHeading.scrollIntoViewIfNeeded();
@@ -194,9 +194,9 @@ test.describe("Demo 9: Senior Household — Hidden Fresh Section", () => {
       console.log("  [Step 4] PASS: 'Your Rewards' panel visible for Sarah (gold member).");
 
       // Welcome message must NOT appear — Sarah is not a new member (shopping_behavior=frequent)
-      const welcomeHeading = page.locator("h3.font-bold.text-blue-900", { hasText: "Welcome to Safeway!" });
+      const welcomeHeading = page.locator("h3.font-bold.text-blue-900", { hasText: "Welcome to Grocery Shop!" });
       await expect(welcomeHeading).not.toBeVisible({ timeout: 5000 });
-      console.log("  [Step 4] PASS: 'Welcome to Safeway!' NOT visible for Sarah (not a new member).");
+      console.log("  [Step 4] PASS: 'Welcome to Grocery Shop!' NOT visible for Sarah (not a new member).");
 
       await rewardsHeading.scrollIntoViewIfNeeded();
       await page.waitForTimeout(300);

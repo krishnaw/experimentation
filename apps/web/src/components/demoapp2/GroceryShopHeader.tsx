@@ -12,7 +12,7 @@ const tierAvatarBg: Record<string, string> = {
   basic: "bg-blue-100 text-blue-800",
 };
 
-export default function SafewayHeader() {
+export default function GroceryShopHeader() {
   const [cartCount] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -53,8 +53,8 @@ export default function SafewayHeader() {
               <span className="text-white font-black text-sm leading-none">S</span>
             </div>
             <span className="text-lg font-bold tracking-tight text-gray-900 hidden sm:inline">
-              Safeway
-            </span>
+              Grocery Shop
+</span>
           </Link>
 
           {/* Search bar */}

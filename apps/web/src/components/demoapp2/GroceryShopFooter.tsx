@@ -16,7 +16,7 @@ const socials = [
   { name: "Pinterest", icon: "P" },
 ];
 
-export default function SafewayFooter() {
+export default function GroceryShopFooter() {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -27,7 +27,7 @@ export default function SafewayFooter() {
         className="w-full py-3.5 flex items-center justify-center gap-2 text-sm text-white/50 hover:text-white/80 transition-colors cursor-pointer border-b border-white/5"
       >
         <span className="font-medium tracking-wide">
-          {expanded ? "Hide" : "More from Safeway"}
+          {expanded ? "Hide" : "More from Grocery Shop"}
         </span>
         <svg
           className={`w-4 h-4 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
@@ -83,7 +83,7 @@ export default function SafewayFooter() {
               ))}
             </div>
             <p className="text-[11px] text-white/30">
-              &copy; 2026 Safeway Demo &middot; For demonstration purposes only
+              &copy; 2026 Grocery Shop Demo &middot; For demonstration purposes only
             </p>
           </div>
         </div>

@@ -18,7 +18,7 @@ Then the AI runs an A/B test, reads the statistical results, and rolls out the w
 
 ## The App You'll See
 
-The demo runs on a simulated Safeway-style grocery app. You'll see it in three states:
+The demo runs on a simulated grocery app (Grocery Shop). You'll see it in three states:
 
 **Anonymous visitor** — default experience, no personalization.
 

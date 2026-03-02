@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { GroceryProduct } from "@/data/safeway-products";
+import type { GroceryProduct } from "@/data/grocery-shop-products";
 import type { WeeklyDealsSectionProps } from "@/lib/layout-types";
 
 function BadgeChip({ badge }: { badge: "Sale" | "New" | "BOGO" | "Hot" }) {

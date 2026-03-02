@@ -82,7 +82,7 @@ describe("SDUI components are pure renderers", () => {
 
     it("does not import groceryCategories data", () => {
       const src = readComponent("CategoryGrid.tsx");
-      expect(src).not.toMatch(/from\s+["']@\/data\/safeway-categories["']/);
+      expect(src).not.toMatch(/from\s+["']@\/data\/grocery-shop-categories["']/);
     });
   });
 
