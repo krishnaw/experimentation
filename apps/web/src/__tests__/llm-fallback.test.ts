@@ -34,9 +34,9 @@ describe("buildFallbackChain", () => {
       MISTRAL_API_KEY: "mistral-key",
     });
     const keys = chain.map((e) => e.key);
-    expect(keys[0]).toBe("cerebras/llama-3.3-70b");
+    expect(keys[0]).toBe("cerebras/gpt-oss-120b");
     expect(keys).toContain("mistral/mistral-small-latest");
-    expect(keys.indexOf("cerebras/llama-3.3-70b")).toBeLessThan(
+    expect(keys.indexOf("cerebras/gpt-oss-120b")).toBeLessThan(
       keys.indexOf("mistral/mistral-small-latest")
     );
   });

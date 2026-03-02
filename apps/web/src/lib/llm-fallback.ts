@@ -120,7 +120,7 @@ export function buildFallbackChain(env: Record<string, string | undefined> = pro
 
   if (env.CEREBRAS_API_KEY) {
     const c = createOpenAI({ baseURL: "https://api.cerebras.ai/v1", apiKey: env.CEREBRAS_API_KEY, fetch: patchSystemRole });
-    chain.push({ key: "cerebras/llama-3.3-70b", name: "cerebras/llama-3.3-70b", model: c.chat("llama-3.3-70b") });
+    chain.push({ key: "cerebras/gpt-oss-120b", name: "cerebras/gpt-oss-120b", model: c.chat("gpt-oss-120b") });
   }
 
   if (env.MISTRAL_API_KEY) {

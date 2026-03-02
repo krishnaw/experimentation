@@ -171,7 +171,7 @@ experimentation/
 
 The chat endpoint tries providers in order (first with a valid key wins):
 
-1. **Cerebras** — llama-3.3-70b, fastest, free tier
+1. **Cerebras** — gpt-oss-120b, fastest, free tier
 2. **Mistral** — mistral-small-latest / mistral-medium-latest, free tier
 3. **Groq** — llama-3.3-70b-versatile, fast, free tier
 4. **Anthropic** — Claude Haiku 4.5, most reliable, paid (rate-limited)
