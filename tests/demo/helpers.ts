@@ -18,23 +18,47 @@ export async function sendChatMessage(page: Page, text: string) {
  * Wait for an in-progress chat response to complete.
  * Detects completion by watching the textarea: it's disabled while the AI is
  * thinking and re-enabled when streaming ends.
+ *
+ * Uses Promise.race with a Node.js setTimeout as a hard deadline to guarantee
+ * the timeout fires regardless of Playwright's internal waitForFunction behavior.
+ * (Passing { timeout: X } as the second arg to waitForFunction may be treated as
+ * the function argument rather than options, silently disabling the timeout.)
  */
 export async function waitForChatResponse(
   page: Page,
   timeoutMs = 55000
 ): Promise<void> {
-  // Wait for loading to start (textarea becomes disabled)
-  await page.waitForFunction(
-    () => (document.querySelector("textarea") as HTMLTextAreaElement)?.disabled === true,
-    { timeout: 10000 }
-  );
-  // Wait for loading to complete (textarea re-enabled)
-  await page.waitForFunction(
-    () => (document.querySelector("textarea") as HTMLTextAreaElement)?.disabled === false,
-    { timeout: timeoutMs }
-  );
-  // Brief settle time for DOM to finish rendering streamed content
-  await page.waitForTimeout(300);
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+  const hardDeadline = new Promise<never>((_, reject) => {
+    timeoutHandle = setTimeout(
+      () => reject(new Error(`waitForChatResponse timeout after ${timeoutMs}ms`)),
+      timeoutMs
+    );
+  });
+
+  try {
+    await Promise.race([
+      (async () => {
+        // Wait for loading to start (textarea becomes disabled)
+        await page.waitForFunction(
+          () => (document.querySelector("textarea") as HTMLTextAreaElement)?.disabled === true,
+          undefined,
+          { timeout: 10000 }
+        );
+        // Wait for loading to complete (textarea re-enabled)
+        await page.waitForFunction(
+          () => (document.querySelector("textarea") as HTMLTextAreaElement)?.disabled === false,
+          undefined,
+          { timeout: timeoutMs }
+        );
+        // Brief settle time for DOM to finish rendering streamed content
+        await page.waitForTimeout(300);
+      })(),
+      hardDeadline,
+    ]);
+  } finally {
+    if (timeoutHandle !== undefined) clearTimeout(timeoutHandle);
+  }
 }
 
 /**
@@ -191,4 +215,56 @@ export async function findExperimentsByName(
   } catch {
     return [];
   }
+}
+
+/**
+ * Sign in to DemoApp2 as a named persona.
+ * Clicks "Sign In" button → waits for dropdown → clicks persona name → waits for layout fetch.
+ */
+export async function signInDemoApp2(page: Page, personaName: string): Promise<void> {
+  // If already signed in as someone else, open the existing user menu
+  const signInBtn = page.locator('button', { hasText: 'Sign In' }).first();
+  const isSignedOut = await signInBtn.isVisible().catch(() => false);
+  if (isSignedOut) {
+    await signInBtn.click();
+  } else {
+    // Click the signed-in avatar button to open dropdown
+    await page.locator('header button').filter({ hasText: personaName.split(' ')[0] }).first().click().catch(async () => {
+      // Fallback: find any header button that is not "Sign In"
+      await page.locator('header').locator('button').last().click();
+    });
+  }
+  // Wait for dropdown and click the persona
+  await page.waitForSelector(`text=${personaName}`, { state: 'visible', timeout: 5000 });
+  await page.getByText(personaName, { exact: true }).first().click();
+  // Wait for layout API response (networkidle covers the POST /api/demoapp2/layout)
+  await page.waitForLoadState('networkidle');
+}
+
+/**
+ * Sign out of DemoApp2.
+ * Clicks the signed-in avatar button → clicks "Sign Out" → waits for anonymous layout fetch.
+ */
+export async function signOutDemoApp2(page: Page): Promise<void> {
+  // The signed-in persona button uniquely contains a w-8 h-8 rounded-full avatar circle.
+  // No other header button has this child element — not the cart or nav buttons.
+  const personaBtn = page.locator('header button:has(div.w-8.h-8.rounded-full)');
+  await personaBtn.click();
+  await page.waitForSelector('text=Sign Out', { state: 'visible', timeout: 5000 });
+  await page.getByText('Sign Out').click();
+  await page.waitForLoadState('networkidle');
+}
+
+/**
+ * Wait for DemoApp2 layout to finish loading (skeleton gone, sections visible).
+ */
+export async function waitForDemoApp2Layout(page: Page): Promise<void> {
+  // Wait for the loading skeleton to disappear
+  await page.waitForFunction(
+    () => !document.querySelector('[data-testid="loading-skeleton"]'),
+    { timeout: 15000 }
+  ).catch(() => {}); // skeleton may not exist if already loaded
+  // Wait for at least one main section to be present
+  await page.waitForSelector('section, [data-section]', { timeout: 10000 }).catch(() => {});
+  await page.waitForLoadState('networkidle');
 }

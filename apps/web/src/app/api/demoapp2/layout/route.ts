@@ -145,8 +145,9 @@ export async function POST(req: NextRequest) {
     },
   };
 
-  // Fresh Section
-  const freshVisible = flags["demoapp2-fresh-section"] !== false;
+  // Fresh Section — GrowthBook Node SDK may return boolean false or string "false"
+  const freshFlag = flags["demoapp2-fresh-section"];
+  const freshVisible = freshFlag !== false && freshFlag !== "false";
   const freshSection = {
     id: "fresh",
     component: "FreshSection" as const,

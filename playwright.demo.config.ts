@@ -4,8 +4,8 @@ export default defineConfig({
   globalSetup: "./tests/demo/global-setup.ts",
   testDir: "./tests/demo",
   timeout: 90 * 1000,
-  workers: 4,
-  fullyParallel: true,
+  workers: 1,
+  fullyParallel: false,
   retries: 0,
   reporter: [["list"], ["html", { outputFolder: "playwright-report/demo", open: "never" }]],
   use: {

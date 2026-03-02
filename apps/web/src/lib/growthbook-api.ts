@@ -188,7 +188,7 @@ export async function addTargetingRule(
     method: "POST",
     body: JSON.stringify({
       environments: {
-        [envId]: { rules: [...existingRules, newRule] },
+        [envId]: { enabled: true, rules: [...existingRules, newRule] },
       },
     }),
   });
@@ -225,7 +225,7 @@ export async function updateTargetingRule(
     method: "POST",
     body: JSON.stringify({
       environments: {
-        [envId]: { rules: existingRules },
+        [envId]: { enabled: true, rules: existingRules },
       },
     }),
   });
@@ -277,7 +277,7 @@ export async function addExperimentRule(
     method: "POST",
     body: JSON.stringify({
       environments: {
-        [envId]: { rules: [...existingRules, experimentRule] },
+        [envId]: { enabled: true, rules: [...existingRules, experimentRule] },
       },
     }),
   });
