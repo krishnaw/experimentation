@@ -103,6 +103,13 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
     } catch {
       console.log(`  [Step 2] AI chat timed out — proceeding with API fallback`);
     }
+    // Extra settle time so streamed response content fully renders before screenshot
+    await dashPage.waitForTimeout(1500);
+    // Scroll chat panel to top so user prompt is visible alongside the response
+    await dashPage.evaluate(() => {
+      document.querySelectorAll<HTMLElement>('[class*="overflow-y-auto"]').forEach(el => { el.scrollTop = 0; });
+    });
+    await dashPage.waitForTimeout(200);
     await dashPage.screenshot({
       path: `${SCREENSHOT_DIR}/10a-experiment-created.png`,
       fullPage: true,
@@ -163,6 +170,12 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
     const resultsPage = await context.newPage();
     await resultsPage.goto("http://localhost:3050/dashboard", { waitUntil: "networkidle" });
     await resultsPage.waitForSelector("textarea", { state: "visible" });
+    // Wait for Exp Engine connection — avoids "Exp Engine offline" in screenshot
+    await resultsPage.waitForSelector('text=Connected to Exp Engine', { timeout: 8000 })
+      .catch(async () => {
+        await resultsPage.reload({ waitUntil: "networkidle" });
+        await resultsPage.waitForSelector('text=Connected to Exp Engine', { timeout: 5000 }).catch(() => {});
+      });
 
     const prompt = experimentId
       ? `Get results for experiment ${experimentId} and summarize the statistical significance.`
@@ -177,6 +190,13 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
     } catch {
       console.log("  [Step 3] AI results timed out");
     }
+    // Extra settle time so streamed response content fully renders before screenshot
+    await resultsPage.waitForTimeout(1500);
+    // Scroll chat panel to top so user prompt is visible alongside the response
+    await resultsPage.evaluate(() => {
+      document.querySelectorAll<HTMLElement>('[class*="overflow-y-auto"]').forEach(el => { el.scrollTop = 0; });
+    });
+    await resultsPage.waitForTimeout(200);
     await resultsPage.screenshot({
       path: `${SCREENSHOT_DIR}/10b-statistical-results.png`,
       fullPage: true,
@@ -189,6 +209,12 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
     const rolloutPage = await context.newPage();
     await rolloutPage.goto("http://localhost:3050/dashboard", { waitUntil: "networkidle" });
     await rolloutPage.waitForSelector("textarea", { state: "visible" });
+    // Wait for Exp Engine connection — avoids "Exp Engine offline" in screenshot
+    await rolloutPage.waitForSelector('text=Connected to Exp Engine', { timeout: 8000 })
+      .catch(async () => {
+        await rolloutPage.reload({ waitUntil: "networkidle" });
+        await rolloutPage.waitForSelector('text=Connected to Exp Engine', { timeout: 5000 }).catch(() => {});
+      });
 
     const startRollout = Date.now();
     await sendChatMessage(
@@ -235,11 +261,13 @@ test.describe("Demo 10 — A/B Statistical Test", () => {
     await signInDemoApp2(page, "Sarah Chen");
     await page.waitForTimeout(2000);
 
-    const gridLayout = page.locator("div.grid.grid-cols-2").first();
-    await expect(gridLayout).toBeVisible({ timeout: 10000 });
-    console.log("  [Step 5] PASS: Grid layout visible for Sarah Chen after rollout.");
-    await gridLayout.scrollIntoViewIfNeeded();
-    await page.waitForTimeout(300);
+    // Scroll to deals heading (unique to WeeklyDeals) — div.grid.grid-cols-2 also
+    // matches FreshSection's category grid which appears higher on the page.
+    const dealsHeading = page.locator("h2, h3").filter({ hasText: /Exclusive Deals|Member Deals|Weekly Deals/ }).first();
+    await expect(dealsHeading).toBeVisible({ timeout: 10000 });
+    console.log("  [Step 5] PASS: Deals grid visible for Sarah Chen after rollout.");
+    await dealsHeading.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
     await page.screenshot({
       path: `${SCREENSHOT_DIR}/10d-sarah-grid-after-rollout.png`,
     });

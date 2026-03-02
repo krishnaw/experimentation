@@ -8,7 +8,7 @@
  */
 
 import { chromium } from "playwright";
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, writeFileSync } from "fs";
 import { resolve, join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -637,6 +637,10 @@ figcaption {
 
 </body>
 </html>`;
+
+// Save HTML for the audit script to render page-by-page
+const HTML_PATH = join(ROOT, "PRE-DEMO.html");
+writeFileSync(HTML_PATH, html);
 
 const browser = await chromium.launch();
 const page    = await browser.newPage();

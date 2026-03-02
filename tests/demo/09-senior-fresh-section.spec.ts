@@ -73,6 +73,11 @@ test.describe("Demo 9: Senior Household — Hidden Fresh Section", () => {
       } catch {
         console.log(`  [Step 1] AI chat timed out after ${((Date.now() - start) / 1000).toFixed(1)}s — proceeding with API fallback`);
       }
+      // Scroll chat panel to top so the user's prompt is visible alongside the response
+      await dashPage.evaluate(() => {
+        document.querySelectorAll<HTMLElement>('[class*="overflow-y-auto"]').forEach(el => { el.scrollTop = 0; });
+      });
+      await dashPage.waitForTimeout(200);
       await dashPage.screenshot({ path: `${SCREENSHOT_DIR}/09a-ai-creates-flag.png`, fullPage: true });
       console.log("  [Step 1] Screenshot: 09a-ai-creates-flag.png");
       await dashPage.close();

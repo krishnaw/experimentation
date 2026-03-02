@@ -20,14 +20,30 @@ test.describe("Demo 00 — App Overview Screenshots", () => {
     await page.waitForTimeout(1500);
     await page.screenshot({
       path: `${SCREENSHOT_DIR}/00-demoapp2-overview.png`,
-      fullPage: false,
+      fullPage: true,
     });
     console.log("  [00] Screenshot: 00-demoapp2-overview.png");
 
-    // ── Control Room — dashboard with context panel ──────────────────────────
-    console.log("  [00] Capturing Control Room overview...");
+    // ── Control Room — show a live AI conversation, not the empty welcome state ─
+    console.log("  [00] Capturing Control Room with active conversation...");
     await page.goto("http://localhost:3050/dashboard", { waitUntil: "networkidle" });
-    await page.waitForTimeout(1500);
+    await page.waitForSelector("textarea", { state: "visible" });
+    // Send a quick question so the AI responds — proves the chat works
+    const textarea = page.locator("textarea");
+    await textarea.fill("What feature flags are active?");
+    await textarea.press("Enter");
+    // Wait for AI to respond (textarea disabled → re-enabled)
+    try {
+      await page.waitForFunction(
+        () => (document.querySelector("textarea") as HTMLTextAreaElement)?.disabled === true,
+        undefined, { timeout: 8000 }
+      );
+      await page.waitForFunction(
+        () => (document.querySelector("textarea") as HTMLTextAreaElement)?.disabled === false,
+        undefined, { timeout: 30000 }
+      );
+    } catch { /* proceed anyway */ }
+    await page.waitForTimeout(1000);
     await page.screenshot({
       path: `${SCREENSHOT_DIR}/00-control-room-overview.png`,
       fullPage: false,
