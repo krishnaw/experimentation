@@ -38,22 +38,27 @@ Allow 30 seconds after starting for the app to compile on first load.
 
 ## Demo Flow Overview
 
-The demo tells a single story: a product manager uses a chat interface to run five personalization experiments on a live grocery app. Each experiment takes under two minutes to set up. No engineers are paged. No code is deployed.
+The demo tells a single story: a product manager uses a chat interface to target users, run experiments, and make data-driven decisions on a live grocery app — all in natural language. No engineers. No code deploys.
 
 ```
-Total time: ~25 minutes (core) or ~30 minutes (with statistical test)
+Total time: ~20 minutes
 
  0:00  Intro — show DemoApp2 (anonymous, default page)
- 1:00  Experiment 1: Gold Member Hero Banner         [3 min]
- 4:00  Experiment 2: Frequent Shopper Deals Grid     [3 min]
- 7:00  Experiment 3: Family Category Boost           [3 min]
-10:00  Experiment 4: Regional Price Sort             [3 min]
-13:00  Experiment 5: Senior Fresh Section            [4 min, 3 personas]
-17:00  Demo 10: A/B Statistical Test (optional)      [5 min]
-22:00  Architecture callout (1 slide)
-23:00  Run automated validation (pnpm test:demo)
-25:00  Q&A
+ 1:00  Demo 1:  Global flag → instant layout change     [2 min, DemoApp1]
+ 3:00  Demo 5:  Gold member hero banner                 [3 min, 2 personas]
+ 6:00  Demo 6:  Frequent shopper deals grid             [3 min, 2 personas]
+ 9:00  Demo 7:  Family category boost                   [2 min, 2 personas]
+11:00  Demo 8:  Regional price sort (California)        [2 min, 2 personas]
+13:00  Demo 9:  Senior fresh section                    [3 min, 3 personas]
+16:00  Demo 10: A/B test → statistical results → rollout [3 min]
+19:00  Architecture callout + pnpm test:demo
+20:00  Q&A
 ```
+
+**Skipped in this flow (available for engineering audiences):**
+- Demo 2 — Boolean flag section toggle (covered by Demo 1)
+- Demo 3 — Experiment lifecycle via chat only, no UI change (covered by Demo 10)
+- Demo 4 — API sort order in JSON response (too technical for leadership)
 
 ---
 
@@ -201,13 +206,13 @@ These were added to give the demo a richer frequent-shopper audience. Jordan Lee
 
 ## Running the Automated Validation
 
-The entire demo is covered by 9 automated tests that run against the live servers:
+The entire demo is covered by 7 automated tests that run against the live servers (Demos 2, 3, and 4 are skipped — they're less visual and covered by other demos):
 
 ```bash
 pnpm test:demo
 ```
 
-Expected output: all 9 tests pass in approximately 5 minutes. Each test:
+Expected output: all 7 tests pass in approximately 5 minutes. Each test:
 1. Deletes any existing version of the feature flag (clean slate)
 2. Instructs the AI via the Control Room chat to create the flag and targeting rule
 3. Signs in as each relevant persona and asserts the correct UI variant appears

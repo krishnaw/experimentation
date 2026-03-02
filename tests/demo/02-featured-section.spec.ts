@@ -21,7 +21,10 @@ import {
   reloadWithFreshFeatures,
 } from "./helpers";
 
-test.describe("Demo 2: Boolean Flag → Section Visibility", () => {
+// SKIPPED: Boolean flag demo is covered conceptually by Demo 1 (string flag →
+// layout change). Less visual impact for a leadership audience. Re-enable for
+// engineering-focused demos by changing .skip back to test.describe.
+test.describe.skip("Demo 2: Boolean Flag → Section Visibility", () => {
   test.beforeAll(async ({ request }) => {
     console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log("  DEMO 2: Boolean Flag → Show / Hide Page Section");

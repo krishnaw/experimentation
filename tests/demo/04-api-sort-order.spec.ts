@@ -73,7 +73,10 @@ async function ensureFeatureExists(
   }
 }
 
-test.describe("Demo 4: API Sort Order via Chat", () => {
+// SKIPPED: Tests API JSON response (meta.sortOrder) — no visible UI change for
+// the audience. Too technical for a leadership demo. Re-enable for engineering
+// demos where showing server-side flag evaluation in raw API output is useful.
+test.describe.skip("Demo 4: API Sort Order via Chat", () => {
   test.beforeAll(async ({ request }) => {
     console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log("  DEMO 4: API Sort Order — Live Feature Flag Control");

@@ -24,7 +24,11 @@ import {
 
 const DASHBOARD_URL = "http://localhost:3050/dashboard";
 
-test.describe("Demo 3: Experiment Lifecycle via Dashboard", () => {
+// SKIPPED: Experiment lifecycle chat-only demo (no visible UI change).
+// Superseded by Demo 10, which runs the full A/B cycle including statistical
+// results and a confirmed rollout in DemoApp2. Re-enable for audiences who
+// want to see the raw conversation flow without the rollout validation.
+test.describe.skip("Demo 3: Experiment Lifecycle via Dashboard", () => {
   test.beforeAll(async ({ request }) => {
     console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log("  DEMO 3: Full Experiment Lifecycle via Chat");
